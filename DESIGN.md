@@ -322,3 +322,9 @@ Departures from the original mockups, made for the user's sake:
 | 5 | Units: millilitres only in v1 | Fluid ounces add conversions everywhere for little gain; can come later |
 | 6 | Extra Today message after the last slot; empty Cellar Book remark | Mockups didn't cover these states |
 | 7 | No SVG or chart packages; drawn with `CustomPainter` | Fewer dependencies, exact look |
+| 8 | On the first day, glasses due before setup aren't counted as missed | Don't greet a new user with "twelve glasses remain untouched" |
+| 9 | Evening line when nothing is left: "That will be all for today… first glass tomorrow at 07:00" | The mockup had no state for after the last glass |
+| 10 | Reminder bodies never repeat the address; the title carries it | "Your 250 ml, Saransh. Good morning, Saransh…" read twice |
+| 11 | "Rehearse it now" waits ten seconds for "At the door" | Full screen only shows over a locked phone |
+| 12 | A full-screen reminder answered in the app is cleared from the shade, and only unanswered reminders open the door | No stale or repeated knocks |
+| 13 | Cellar Book lists days only from the first record, and says "Today's glasses go into the book tonight" before any complete day | New users aren't shown a column of zeros |

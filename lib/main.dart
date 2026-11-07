@@ -16,11 +16,25 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final notifications = Notifications();
   final responses = StreamController<NotificationResponse>.broadcast();
-  await notifications.init(
-    onResponse: responses.add,
-    onBackgroundResponse: onBackgroundReminderResponse,
-  );
-  final launch = await notifications.launchResponse();
+  // Reminders must never keep the household from opening: if Android
+  // refuses something here, carry on and log it.
+  NotificationResponse? launch;
+  try {
+    await notifications.init(
+      onResponse: responses.add,
+      onBackgroundResponse: onBackgroundReminderResponse,
+    );
+    launch = await notifications.launchResponse();
+  } catch (e, s) {
+    FlutterError.reportError(
+      FlutterErrorDetails(
+        exception: e,
+        stack: s,
+        library: 'hydrate_sir',
+        context: ErrorDescription('while setting up reminders'),
+      ),
+    );
+  }
 
   runApp(
     ProviderScope(

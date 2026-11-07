@@ -7,6 +7,7 @@
 #   test     unit + widget tests
 #   build    release APK build
 #   permissions  fail if the release APK asks for anything outside the allowlist
+#   resources    fail if resources looked up by name were shrunk away
 #   all      every step above, in order
 set -euo pipefail
 
@@ -78,6 +79,31 @@ step_permissions() {
   echo "  ✓ only the allowed permissions"
 }
 
+# Resources the Dart code looks up by name. Release builds shrink away
+# anything that looks unused, so make sure these survived.
+REQUIRED_DRAWABLES=(ic_stat_bowtie)
+
+step_resources() {
+  echo "▸ resource check"
+  local apk="build/app/outputs/flutter-apk/app-release.apk"
+  local sdk="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+  if [[ -z "$sdk" && -f android/local.properties ]]; then
+    sdk="$(sed -n 's/^sdk\.dir=//p' android/local.properties)"
+  fi
+  local aapt2
+  aapt2="$(ls -d "$sdk"/build-tools/*/aapt2 2>/dev/null | sort -V | tail -1)"
+  local dump bad=0 d
+  dump="$("$aapt2" dump resources "$apk")"
+  for d in "${REQUIRED_DRAWABLES[@]}"; do
+    if ! grep -q "drawable/$d\$" <<<"$dump"; then
+      echo "  ✗ drawable/$d is missing from the release APK" >&2
+      bad=1
+    fi
+  done
+  [[ $bad -eq 0 ]] || exit 1
+  echo "  ✓ required resources present"
+}
+
 if [[ $# -eq 0 ]]; then
   set -- all
 fi
@@ -89,7 +115,8 @@ for s in "$@"; do
     test) step_test ;;
     build) step_build ;;
     permissions | offline) step_permissions ;;
-    all) step_format; step_analyze; step_test; step_build; step_permissions ;;
+    resources) step_resources ;;
+    all) step_format; step_analyze; step_test; step_build; step_permissions; step_resources ;;
     *) echo "unknown step: $s" >&2; exit 2 ;;
   esac
 done

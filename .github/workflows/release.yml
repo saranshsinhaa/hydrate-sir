@@ -73,8 +73,8 @@ jobs:
           (cd "$OUT" && sha256sum "hydrate-sir-$VERSION.apk" > "hydrate-sir-$VERSION.apk.sha256")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Permission check
-        run: scripts/check.sh permissions
+      - name: Permission and resource checks
+        run: scripts/check.sh permissions resources
 
       - name: Signature check
         run: |

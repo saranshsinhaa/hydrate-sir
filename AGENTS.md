@@ -43,7 +43,7 @@ Every feature, fix and change ships with tests in the same change. Nothing exist
 |---|---|
 | `pre-commit` hook | format, analyze (zero issues), unit + widget tests |
 | `commit-msg` hook | commit message rules (section 8) |
-| CI on push/PR (`ci.yml`) | `scripts/check.sh all`: the above plus a release build and the permission allowlist |
+| CI on push/PR (`ci.yml`) | `scripts/check.sh all`: the above plus a release build, the permission allowlist, and a check that resources used by name survived shrinking |
 
 Run `scripts/setup.sh` once after cloning to turn on the hooks. Before saying a task is done, an agent runs `scripts/check.sh format analyze test`. If the UI changed, it also runs the app on a phone and checks it there.
 

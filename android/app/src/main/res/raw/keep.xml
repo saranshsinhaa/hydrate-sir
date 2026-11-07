@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Release builds shrink away resources that look unused. These are only
+     referred to by name from Dart (the notification icon), so keep them. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_bowtie,@drawable/ic_launcher_foreground" />

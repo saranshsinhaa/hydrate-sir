@@ -66,6 +66,10 @@ I shall then be entirely punctual.
 
 Nothing more. I never ask for your location, your contacts or your files, and I send nothing about you anywhere.
 
+## Terms of employment
+
+I am free to engage, to study and to improve, under the [GNU General Public Licence, version 3](LICENSE). Should you publish a version of me you have altered, you must share its workings under the same terms, so that no one may lock me away. The typefaces, Libre Caslon Text and Courier Prime, are used under the SIL Open Font Licence.
+
 ## A word of caution
 
 My suggestion is a sensible estimate for healthy adults; it is not medical advice. Your physician, naturally, outranks me.

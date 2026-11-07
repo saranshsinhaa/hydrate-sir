@@ -29,7 +29,7 @@ flutter run          # with your phone plugged in and USB debugging on
 
 ```bash
 scripts/check.sh format analyze test   # what runs before each commit
-scripts/check.sh all                   # adds a release build and the "no internet" check
+scripts/check.sh all                   # adds a release build and the permission check (CI runs this)
 ```
 
 ## Screenshots

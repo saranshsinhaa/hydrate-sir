@@ -43,8 +43,7 @@ Every feature, fix and change ships with tests in the same change. Nothing exist
 |---|---|
 | `pre-commit` hook | format, analyze (zero issues), unit + widget tests |
 | `commit-msg` hook | commit message rules (section 8) |
-| `pre-push` hook | everything above, a release APK build, and the offline check |
-| CI on push/PR (`ci.yml`) | `scripts/check.sh all` |
+| CI on push/PR (`ci.yml`) | `scripts/check.sh all`: the above plus a release build and the permission allowlist |
 
 Run `scripts/setup.sh` once after cloning to turn on the hooks. Before saying a task is done, an agent runs `scripts/check.sh format analyze test`. If the UI changed, it also runs the app on a phone and checks it there.
 
@@ -90,7 +89,7 @@ integration_test/ on-device flows
 docs/             development.md, design.md, screenshots/
 tool/screenshots/ renders the README screenshots
 scripts/          setup.sh, check.sh
-.githooks/        pre-commit, commit-msg, pre-push
+.githooks/        pre-commit, commit-msg
 ```
 
 - Widgets never talk to the database directly: widget → provider → repository → Drift.
@@ -139,13 +138,17 @@ All user-facing text, including notifications, errors, empty states, permission 
 - Notification actions (Thank you / In 15 minutes / Not now) work without opening the app.
 - Reference test device: Nothing Phone (3), Android 17.
 
-## 11. Public docs
+## 11. Licence
+
+The app is GPL-3.0 (`LICENSE`). Contributions are accepted under the same licence. Any new dependency or bundled asset must be GPL-3.0-compatible (MIT, BSD, Apache-2.0, OFL and the like); check before adding.
+
+## 12. Public docs
 
 - `README.md` is for people who want to **use** the app, written in Hargreaves' voice. No build or release instructions there.
 - Developer setup lives in `docs/development.md`; keep it short.
 - When a screen changes, regenerate the README screenshots: `flutter test tool/screenshots --update-goldens`. They use made-up data; never use real device screenshots with personal details.
 
-## 12. Working style
+## 13. Working style
 
 - Read the relevant code and this file before changing anything.
 - Make the smallest change that does the job; don't refactor unrelated code.

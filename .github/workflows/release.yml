@@ -1,12 +1,18 @@
 name: Release
 
-# Push a tag like v1.2.0 to build an APK and publish it as a GitHub Release.
+# Push a tag like v1.2.0 to build a signed APK and publish it as a GitHub
+# Release asset. Nothing is stored as an Actions artifact, so the artifact
+# storage quota is never touched.
 on:
   push:
     tags: ['v*.*.*']
 
 permissions:
   contents: write
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -31,8 +37,8 @@ jobs:
       - name: Format, analyze, test
         run: scripts/check.sh format analyze test
 
-      # Signing secrets are optional until keys are set up.
-      # Without them the APK is signed with a throwaway debug key.
+      # A release must be signed with the real key: Android only installs an
+      # update over an existing app when both carry the same signature.
       - name: Restore signing key
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
@@ -40,10 +46,12 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          if [ -z "$KEYSTORE_BASE64" ]; then
-            echo "::warning::No signing secrets set; release APK will be debug-signed."
-            exit 0
-          fi
+          for v in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!v}" ]; then
+              echo "::error::Repository secret $v is not set; refusing to publish an unsigned release."
+              exit 1
+            fi
+          done
           echo "$KEYSTORE_BASE64" | base64 --decode > android/app/release.jks
           {
             echo "storeFile=release.jks"
@@ -53,19 +61,40 @@ jobs:
           } > android/key.properties
 
       - name: Build release APK
+        id: build
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          flutter build apk --release --build-name="$VERSION" --build-number="${{ github.run_number }}"
-          mv build/app/outputs/flutter-apk/app-release.apk "build/app/outputs/flutter-apk/hydrate-sir-$VERSION.apk"
-          cp "build/app/outputs/flutter-apk/hydrate-sir-$VERSION.apk" build/app/outputs/flutter-apk/app-release.apk
+          flutter build apk --release \
+            --build-name="$VERSION" \
+            --build-number="${{ github.run_number }}" \
+            --dart-define=APP_VERSION="$VERSION"
+          OUT=build/app/outputs/flutter-apk
+          cp "$OUT/app-release.apk" "$OUT/hydrate-sir-$VERSION.apk"
+          (cd "$OUT" && sha256sum "hydrate-sir-$VERSION.apk" > "hydrate-sir-$VERSION.apk.sha256")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Offline check
         run: scripts/check.sh offline
 
-      - uses: softprops/action-gh-release@v2
+      - name: Signature check
+        run: |
+          APKSIGNER="$(ls -d "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)"
+          CERTS="$("$APKSIGNER" verify --print-certs build/app/outputs/flutter-apk/app-release.apk)"
+          echo "$CERTS"
+          if echo "$CERTS" | grep -q "CN=Android Debug"; then
+            echo "::error::The APK is signed with a debug key."
+            exit 1
+          fi
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          files: build/app/outputs/flutter-apk/hydrate-sir-*.apk
+          files: |
+            build/app/outputs/flutter-apk/hydrate-sir-${{ steps.build.outputs.version }}.apk
+            build/app/outputs/flutter-apk/hydrate-sir-${{ steps.build.outputs.version }}.apk.sha256
+          fail_on_unmatched_files: true
           generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
 
       - name: Remove signing material
         if: always()

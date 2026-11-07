@@ -199,7 +199,7 @@ All strings live in `lib/copy/` with an `{address}` placeholder.
 | Condition | Message |
 |---|---|
 | all glasses taken | "Every glass taken. Splendid, {address}. That will be all for today." |
-| ≥2 overdue | "Forgive me, {address}, but {n} glasses remain untouched. Shall we remedy that?" |
+| ≥2 overdue | "Forgive me, {address}, but {n} glasses remain untouched. Shall I bring one now?" |
 | 1 overdue | "Your {HH:mm} glass is poured and waiting, {address}." |
 | before first glass | "Good morning, {address}. Your first glass at {HH:mm}." |
 | otherwise | "Your next glass at {HH:mm}, {address}. Do carry on." |

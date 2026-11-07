@@ -9,8 +9,16 @@ environment:
   flutter: 3.47.9
 
 dependencies:
+  drift: ^2.35.3
+  drift_flutter: ^0.3.1
   flutter:
     sdk: flutter
+  flutter_local_notifications: ^23.0.0
+  flutter_riverpod: ^3.5.0
+  flutter_timezone: ^5.1.1
+  intl: ^0.20.3
+  shared_preferences: ^2.5.6
+  timezone: ^0.11.2
 
 dev_dependencies:
   flutter_test:
@@ -18,6 +26,20 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  build_runner: ^2.17.1
+  drift_dev: ^2.35.2
 
 flutter:
   uses-material-design: true
+  fonts:
+    # Variable font: weights are applied via FontVariation in lib/app/theme.
+    - family: LibreCaslon
+      fonts:
+        - asset: assets/fonts/libre-caslon-text/LibreCaslonText-VF.ttf
+        - asset: assets/fonts/libre-caslon-text/LibreCaslonText-Italic-VF.ttf
+          style: italic
+    - family: CourierPrime
+      fonts:
+        - asset: assets/fonts/courier-prime/CourierPrime-Regular.ttf
+        - asset: assets/fonts/courier-prime/CourierPrime-Bold.ttf
+          weight: 700

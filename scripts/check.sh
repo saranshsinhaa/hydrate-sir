@@ -6,7 +6,7 @@
 #   analyze  flutter analyze with zero issues allowed
 #   test     unit + widget tests
 #   build    release APK build
-#   offline  fail if the release APK requests the INTERNET permission
+#   permissions  fail if the release APK asks for anything outside the allowlist
 #   all      every step above, in order
 set -euo pipefail
 
@@ -32,8 +32,21 @@ step_build() {
   flutter build apk --release
 }
 
-step_offline() {
-  echo "▸ offline check"
+# Permissions the release APK may request; anything else fails the build.
+ALLOWED_PERMISSIONS=(
+  android.permission.POST_NOTIFICATIONS
+  android.permission.SCHEDULE_EXACT_ALARM
+  android.permission.USE_FULL_SCREEN_INTENT
+  android.permission.RECEIVE_BOOT_COMPLETED
+  android.permission.VIBRATE
+  android.permission.WAKE_LOCK
+  android.permission.INTERNET
+  android.permission.REQUEST_INSTALL_PACKAGES
+  io.github.saranshsinhaa.hydrate_sir.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+)
+
+step_permissions() {
+  echo "▸ permission check"
   local apk="build/app/outputs/flutter-apk/app-release.apk"
   if [[ ! -f "$apk" ]]; then
     echo "  $apk not found; run 'scripts/check.sh build' first" >&2
@@ -53,11 +66,16 @@ step_offline() {
     echo "  aapt2 not found under $sdk/build-tools" >&2
     exit 1
   fi
-  if "$aapt2" dump permissions "$apk" | grep -q 'android.permission.INTERNET'; then
-    echo "  ✗ release APK requests android.permission.INTERNET; the app must stay offline" >&2
-    exit 1
-  fi
-  echo "  ✓ no INTERNET permission"
+  local bad=0 p
+  while read -r p; do
+    [[ -z "$p" ]] && continue
+    if [[ ! " ${ALLOWED_PERMISSIONS[*]} " == *" $p "* ]]; then
+      echo "  ✗ unexpected permission: $p" >&2
+      bad=1
+    fi
+  done < <("$aapt2" dump permissions "$apk" | sed -n "s/.*name='\([^']*\)'.*/\1/p")
+  [[ $bad -eq 0 ]] || exit 1
+  echo "  ✓ only the allowed permissions"
 }
 
 if [[ $# -eq 0 ]]; then
@@ -70,8 +88,8 @@ for s in "$@"; do
     analyze) step_analyze ;;
     test) step_test ;;
     build) step_build ;;
-    offline) step_offline ;;
-    all) step_format; step_analyze; step_test; step_build; step_offline ;;
+    permissions | offline) step_permissions ;;
+    all) step_format; step_analyze; step_test; step_build; step_permissions ;;
     *) echo "unknown step: $s" >&2; exit 2 ;;
   esac
 done

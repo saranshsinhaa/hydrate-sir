@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/home/home_shell.dart';
 import '../features/onboarding/welcome_screen.dart';
 import '../features/reminder/door_screen.dart';
+import '../features/updates/update_controller.dart';
 import '../services/background.dart';
 import '../services/notifications.dart';
 import 'providers.dart';
@@ -43,6 +44,7 @@ class _HydrateSirAppState extends ConsumerState<HydrateSirApp>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.launch != null) _onResponse(widget.launch!);
       ref.read(reminderSyncProvider).schedule();
+      ref.read(updateControllerProvider.notifier).autoCheck();
     });
   }
 
@@ -64,6 +66,7 @@ class _HydrateSirAppState extends ConsumerState<HydrateSirApp>
       ..invalidate(punctualProvider)
       ..invalidate(batteryExemptProvider);
     ref.read(reminderSyncProvider).schedule();
+    ref.read(updateControllerProvider.notifier).autoCheck();
   }
 
   Future<void> _onResponse(NotificationResponse r) async {

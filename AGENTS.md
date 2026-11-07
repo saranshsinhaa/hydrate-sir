@@ -8,9 +8,10 @@ This repository will become public. Treat every file as something strangers will
 
 ## 1. Hard rules (never break these)
 
-1. **Fully offline.** The release app must never touch the network.
-   - No `android.permission.INTERNET` in the release manifest. `scripts/check.sh offline` enforces this in the pre-push hook and in CI.
-   - No packages that phone home: no Firebase, analytics, crash reporting, ads, remote config, HTTP clients, or `google_fonts` (it downloads fonts at runtime).
+1. **Offline except for updates.** The app's only network use is checking GitHub Releases for a new version and downloading it.
+   - Allowed: `GET` requests to `api.github.com/repos/saranshsinhaa/hydrate-sir/releases/latest` and that release's asset downloads. Nothing about the user is ever sent: no identifiers, no usage data.
+   - Never: Firebase, analytics, crash reporting, ads, remote config, `google_fonts` (it downloads fonts at runtime), or any other request.
+   - `scripts/check.sh permissions` fails the build if the release APK asks for any permission outside the allowlist in section 10.
    - Fonts are bundled in `assets/fonts/` with their licence files.
    - All user data stays on the device.
 2. **Limited git for AI agents.** Agents may read git state and make **local commits** (`git add`, `git commit -m`) in small, gradual steps, each passing the hooks. Agents never push, tag, amend, merge, rebase, reset, checkout/switch, stash, restore, clean, `rm`, delete branches, change git config, or run any `gh` command that creates or changes something on GitHub. Anything destructive needs the human's explicit permission first; pushing is always the human's job.
@@ -131,7 +132,7 @@ All user-facing text, including notifications, errors, empty states, permission 
 
 ## 10. Reminders on Android
 
-- **Approved permissions:** `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM`, `USE_FULL_SCREEN_INTENT`, `RECEIVE_BOOT_COMPLETED`, `VIBRATE`, `WAKE_LOCK`. Never `INTERNET`.
+- **Approved permissions:** `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM`, `USE_FULL_SCREEN_INTENT`, `RECEIVE_BOOT_COMPLETED`, `VIBRATE`, `WAKE_LOCK`, and for updates only `INTERNET` and `REQUEST_INSTALL_PACKAGES`. The list lives in `scripts/check.sh`.
 - Ask for `POST_NOTIFICATIONS` at the end of onboarding, with Hargreaves explaining why.
 - Reschedule every reminder when settings change, after a reboot (`RECEIVE_BOOT_COMPLETED`) and after an app update.
 - Guide the user to exempt the app from battery optimisation; some manufacturers' Android builds (including Nothing OS) delay background alarms.

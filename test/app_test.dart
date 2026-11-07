@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrate_sir/core/profile.dart';
 import 'package:hydrate_sir/features/reminder/door_screen.dart';
 import 'package:hydrate_sir/services/notifications.dart';
+import 'package:hydrate_sir/services/updates.dart';
 
 import 'helpers.dart';
 
@@ -274,6 +275,43 @@ void main() {
       await tester.pumpWidget(h.app());
       await settle(tester);
       expect(find.textContaining('battery warden who'), findsNothing);
+      await h.dispose(tester);
+    });
+  });
+
+  group('new editions', () {
+    testWidgets('Today announces a new edition found on opening', (
+      tester,
+    ) async {
+      usePhone(tester);
+      final h = await Harness.create(profile: const Profile(onboarded: true));
+      h.updates.published = ReleaseInfo(
+        version: '1.1.0',
+        apkUrl: Uri.parse('https://example.test/a.apk'),
+        sizeBytes: 1,
+      );
+      await tester.pumpWidget(h.app());
+      await settle(tester);
+      expect(find.textContaining('A new edition of myself'), findsOneWidget);
+      await tapText(tester, 'Later');
+      expect(find.textContaining('A new edition of myself'), findsNothing);
+      await h.dispose(tester);
+    });
+
+    testWidgets('Instructions can enquire by hand', (tester) async {
+      usePhone(tester);
+      final h = await Harness.create(
+        profile: const Profile(onboarded: true, lookForUpdates: false),
+      );
+      await tester.pumpWidget(h.app());
+      await settle(tester);
+      expect(h.updates.checks, 0, reason: 'automatic checks are off');
+      await tapText(tester, 'Instructions');
+      await tapText(tester, 'Enquire now');
+      expect(
+        find.text('You have the latest edition, sir: v1.0.0.'),
+        findsOneWidget,
+      );
       await h.dispose(tester);
     });
   });

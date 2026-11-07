@@ -96,3 +96,24 @@ abstract final class BatteryText {
       'battery usage) and set it to Unrestricted. Then press back, and I '
       'shall be at your service on the minute.';
 }
+
+abstract final class UpdateText {
+  static const section = 'New editions';
+  static const checkNow = 'Enquire now';
+  static const daily = 'Look for new editions daily';
+  static const dailyHint =
+      'A brief enquiry at GitHub; nothing about you is sent';
+  static const checking = 'I am enquiring at the post office.';
+  static const fetch = 'Fetch and install';
+  static const later = 'Later';
+  static const failed =
+      'The post office could not be reached. Do try again a little later.';
+  static const checksum =
+      'The parcel arrived damaged, so I have discarded it. Do try again.';
+  static const permission =
+      'Android must first permit me to install the new edition. In the page '
+      'I shall open, turn on "Allow from this source", then press back and '
+      'ask me again.';
+  static const installing =
+      'Android will now ask you to confirm. Your records are quite safe.';
+}

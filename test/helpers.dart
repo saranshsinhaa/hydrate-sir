@@ -9,7 +9,13 @@ import 'package:hydrate_sir/app/providers.dart';
 import 'package:hydrate_sir/app/reminders.dart';
 import 'package:hydrate_sir/core/profile.dart';
 import 'package:hydrate_sir/data/database.dart';
+
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+import 'package:hydrate_sir/features/updates/update_controller.dart';
 import 'package:hydrate_sir/services/battery.dart';
+import 'package:hydrate_sir/services/updates.dart';
 import 'package:hydrate_sir/services/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -92,10 +98,58 @@ class FakeBattery extends Battery {
   Future<void> openSettings() async => opened++;
 }
 
+class FakeUpdateService extends UpdateService {
+  ReleaseInfo? published;
+  bool offline = false;
+  bool mayInstall = true;
+  bool badChecksum = false;
+  int checks = 0;
+  int settingsOpened = 0;
+  final installs = <(String, String?)>[];
+
+  @override
+  Future<AppVersion> installed() async => const AppVersion('1.0.0', 1);
+
+  @override
+  Future<ReleaseInfo?> latest() async {
+    checks++;
+    if (offline) throw const SocketException('offline');
+    return published;
+  }
+
+  @override
+  Future<String?> checksum(Uri url) async => 'a' * 64;
+
+  @override
+  Future<String> download(
+    ReleaseInfo release,
+    void Function(double) onProgress,
+  ) async {
+    onProgress(0.5);
+    onProgress(1);
+    return '/cache/${release.version}.apk';
+  }
+
+  @override
+  Future<bool> canInstall() async => mayInstall;
+
+  @override
+  Future<void> openInstallSettings() async => settingsOpened++;
+
+  @override
+  Future<void> install(String path, {String? sha256}) async {
+    if (badChecksum) {
+      throw PlatformException(code: 'checksum', message: 'mismatch');
+    }
+    installs.add((path, sha256));
+  }
+}
+
 class Harness {
   Harness._(this.prefs, this.db, this.notifications, this.now);
 
   final battery = FakeBattery();
+  final updates = FakeUpdateService();
 
   final SharedPreferences prefs;
   final AppDatabase db;
@@ -131,6 +185,7 @@ class Harness {
       databaseProvider.overrideWithValue(db),
       notificationsProvider.overrideWithValue(notifications),
       batteryProvider.overrideWithValue(battery),
+      updateServiceProvider.overrideWithValue(updates),
       clockProvider.overrideWithValue(() => now),
       nowProvider.overrideWith((ref) => Stream.value(now)),
     ],

@@ -35,6 +35,7 @@ class Profile {
     this.onboarded = false,
     this.startedAt,
     this.batteryNoteDismissed = false,
+    this.lookForUpdates = true,
   });
 
   final Address address;
@@ -60,6 +61,9 @@ class Profile {
 
   /// The user declined the battery note on Today.
   final bool batteryNoteDismissed;
+
+  /// Check GitHub once a day for a new edition.
+  final bool lookForUpdates;
 
   static const minWeight = 30, maxWeight = 200;
   static const minAge = 12, maxAge = 100;
@@ -87,6 +91,7 @@ class Profile {
     bool? onboarded,
     DateTime? startedAt,
     bool? batteryNoteDismissed,
+    bool? lookForUpdates,
   }) {
     return Profile(
       address: address ?? this.address,
@@ -106,6 +111,7 @@ class Profile {
       onboarded: onboarded ?? this.onboarded,
       startedAt: startedAt ?? this.startedAt,
       batteryNoteDismissed: batteryNoteDismissed ?? this.batteryNoteDismissed,
+      lookForUpdates: lookForUpdates ?? this.lookForUpdates,
     );
   }
 
@@ -127,6 +133,7 @@ class Profile {
     'onboarded': onboarded,
     'startedAt': startedAt?.millisecondsSinceEpoch,
     'batteryNoteDismissed': batteryNoteDismissed,
+    'lookForUpdates': lookForUpdates,
   };
 
   /// Unknown or missing fields fall back to defaults, so older saves load.
@@ -163,6 +170,7 @@ class Profile {
         j['batteryNoteDismissed'],
         d.batteryNoteDismissed,
       ),
+      lookForUpdates: boolOr(j['lookForUpdates'], d.lookForUpdates),
     );
   }
 }

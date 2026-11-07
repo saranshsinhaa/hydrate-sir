@@ -12,6 +12,7 @@ import '../../core/hydration.dart';
 import '../../core/profile.dart';
 import '../battery/battery_guide.dart';
 import '../onboarding/arrangements_screen.dart';
+import '../updates/update_widgets.dart';
 import '../onboarding/hours_screen.dart';
 import '../onboarding/particulars_screen.dart';
 
@@ -167,6 +168,8 @@ class InstructionsScreen extends ConsumerWidget {
                     ref.invalidate(punctualProvider);
                   },
           ),
+          const UpdateHeading(),
+          const UpdateSection(),
           const SizedBox(height: 26),
           Center(
             child: InkLink.destructive(

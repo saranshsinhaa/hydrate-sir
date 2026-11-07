@@ -13,6 +13,7 @@ import '../../core/format.dart';
 import '../../core/hydration.dart';
 import '../../core/profile.dart';
 import '../battery/battery_guide.dart';
+import '../updates/update_widgets.dart';
 import 'amount_sheet.dart';
 
 /// 5 · Today (docs/design.md §6).
@@ -45,6 +46,7 @@ class TodayScreen extends ConsumerWidget {
             const SizedBox(height: 14),
           ] else
             const BatteryNote(),
+          const UpdateNote(),
           _TodayCard(profile: p, status: s),
           const SizedBox(height: 18),
           Text(h.todayLine(s), style: HsText.voiceLarge),

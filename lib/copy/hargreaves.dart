@@ -169,6 +169,18 @@ class Hargreaves {
       'or quite forgets them. If you will exempt me, $you, I shall arrive '
       'punctually.';
 
+  String edition(String version) => 'This is edition v$version, $you.';
+
+  String upToDate(String version) =>
+      'You have the latest edition, $you: v$version.';
+
+  String newEdition(String version) =>
+      'A new edition of myself has arrived, $you: v$version. Shall I fetch '
+      'it?';
+
+  static String fetching(double progress) =>
+      'Fetching the new edition: ${(progress * 100).round()} per cent.';
+
   String burnQuestion() =>
       'Burn the Cellar Book, $you? Every record shall be lost to the flames.';
 

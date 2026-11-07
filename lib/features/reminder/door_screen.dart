@@ -69,6 +69,11 @@ class _DoorScreenState extends ConsumerState<DoorScreen> {
     final count = p.glassCount;
     final slot = widget.payload.slot.clamp(0, count - 1);
     final rehearsal = widget.payload.rehearsal;
+    final g = Hargreaves.garnish(
+      ref.watch(householdDayProvider),
+      rehearsal ? now.minute : slot,
+      count,
+    );
 
     return PopScope(
       canPop: false,
@@ -93,55 +98,67 @@ class _DoorScreenState extends ConsumerState<DoorScreen> {
                   textAlign: TextAlign.center,
                   style: HsText.caslon(16, italic: true, color: HsColors.label),
                 ),
-                const Spacer(),
-                const Center(child: TrayIllustration(width: 200, onDark: true)),
-                const SizedBox(height: 26),
-                Text(
-                  rehearsal
-                      ? 'A REHEARSAL · ${p.glassSizeMl} ml'
-                      : 'GLASS ${slot + 1} OF $count · ${p.glassSizeMl} ml',
-                  textAlign: TextAlign.center,
-                  style: HsText.courier(
-                    12,
-                    tracking: 0.16,
-                    color: HsColors.label,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Semantics(
-                  liveRegion: true,
-                  child: Column(
-                    spacing: 8,
-                    children: [
-                      Text(
-                        h.reminderTitle(p.glassSizeMl),
-                        textAlign: TextAlign.center,
-                        style: HsText.caslon(
-                          26,
-                          weight: FontWeight.w700,
-                          color: HsColors.label,
-                        ),
-                      ),
-                      Text(
-                        rehearsal
-                            ? Hargreaves.rehearsalBody
-                            : h.reminderBody(
-                                index: slot,
-                                count: count,
-                                minutes: p.glassTimes[slot],
+                Expanded(
+                  // Scrolls if a long curiosity meets a small screen.
+                  child: LayoutBuilder(
+                    builder: (context, box) => SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(minHeight: box.maxHeight),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const SizedBox(height: 16),
+                            const Center(
+                              child: TrayIllustration(width: 180, onDark: true),
+                            ),
+                            const SizedBox(height: 22),
+                            Text(
+                              rehearsal
+                                  ? 'A REHEARSAL · ${p.glassSizeMl} ml'
+                                  : 'GLASS ${slot + 1} OF $count · '
+                                        '${p.glassSizeMl} ml',
+                              textAlign: TextAlign.center,
+                              style: HsText.courier(
+                                12,
+                                tracking: 0.16,
+                                color: HsColors.label,
                               ),
-                        textAlign: TextAlign.center,
-                        style: HsText.caslon(
-                          19,
-                          italic: true,
-                          color: HsColors.label,
-                          height: 1.45,
+                            ),
+                            const SizedBox(height: 10),
+                            Semantics(
+                              liveRegion: true,
+                              child: Text(
+                                h.reminderTitle(p.glassSizeMl),
+                                textAlign: TextAlign.center,
+                                style: HsText.caslon(
+                                  26,
+                                  weight: FontWeight.w700,
+                                  color: HsColors.label,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              '${rehearsal ? Hargreaves.rehearsalBody : h.reminderBody(index: slot, count: count, minutes: p.glassTimes[slot])} '
+                              '${g.kind}',
+                              textAlign: TextAlign.center,
+                              style: HsText.caslon(
+                                18,
+                                italic: true,
+                                color: HsColors.label,
+                                height: 1.45,
+                              ),
+                            ),
+                            const SizedBox(height: 22),
+                            _Curiosity(fact: g.fact),
+                            const SizedBox(height: 16),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ),
-                const Spacer(),
                 Material(
                   color: HsColors.label,
                   child: InkWell(
@@ -195,6 +212,39 @@ class _DoorScreenState extends ConsumerState<DoorScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// "A curiosity", set off by two hairlines like a footnote.
+class _Curiosity extends StatelessWidget {
+  const _Curiosity({required this.fact});
+
+  final String fact;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        border: Border.symmetric(
+          horizontal: BorderSide(color: HsColors.label.withValues(alpha: 0.5)),
+        ),
+      ),
+      child: Column(
+        spacing: 6,
+        children: [
+          Text(
+            'A CURIOSITY',
+            style: HsText.courier(11, tracking: 0.2, color: HsColors.label),
+          ),
+          Text(
+            fact,
+            textAlign: TextAlign.center,
+            style: HsText.caslon(15, color: HsColors.label, height: 1.45),
+          ),
+        ],
       ),
     );
   }

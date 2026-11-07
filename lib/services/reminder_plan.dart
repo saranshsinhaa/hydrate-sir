@@ -74,7 +74,12 @@ List<PlannedReminder> planReminders({
             kind: ReminderKind.glass,
             slot: i,
             title: h.reminderTitle(profile.glassSizeMl),
-            body: h.reminderBody(index: i, count: count, minutes: times[i]),
+            body: h.reminderLetter(
+              index: i,
+              count: count,
+              minutes: times[i],
+              day: day,
+            ),
           ),
         );
       }

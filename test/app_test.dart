@@ -194,6 +194,7 @@ void main() {
     await settle(tester);
     expect(find.text('A REHEARSAL · 250 ml'), findsOneWidget);
     expect(find.text('Your 250 ml, sir.'), findsOneWidget);
+    expect(find.text('A CURIOSITY'), findsOneWidget);
 
     await tester.tap(find.text("I'VE HAD MY GLASS"));
     await letDatabaseWork(tester);

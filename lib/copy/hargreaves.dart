@@ -1,6 +1,7 @@
 import '../core/format.dart';
 import '../core/hydration.dart';
 import '../core/profile.dart';
+import 'curiosities.dart';
 
 /// Everything Hargreaves says that depends on circumstance (DESIGN.md §7).
 /// Fixed screen copy lives beside it in `lib/copy/`.
@@ -94,6 +95,28 @@ class Hargreaves {
     }
     return 'Forgive the intrusion. Glass ${index + 1} of $count is poured '
         'and waiting.';
+  }
+
+  /// The kind word and curiosity for a glass on a given day.
+  static ({String kind, String fact}) garnish(
+    DateTime day,
+    int slot,
+    int count,
+  ) {
+    final seq = Garnish.sequence(day, slot, count);
+    return (kind: Garnish.kindWord(seq), fact: Garnish.curiosity(seq));
+  }
+
+  /// The full reminder: the usual line, a kind word, and a curiosity.
+  String reminderLetter({
+    required int index,
+    required int count,
+    required int minutes,
+    required DateTime day,
+  }) {
+    final g = garnish(day, index, count);
+    final lead = reminderBody(index: index, count: count, minutes: minutes);
+    return '$lead ${g.kind}\n\nA curiosity: ${g.fact}';
   }
 
   String get followUpTitle => 'If I might, $you';

@@ -188,14 +188,16 @@ class Notifications {
     final h = Hargreaves.of(profile);
     const id = 9100;
     final title = h.reminderTitle(profile.glassSizeMl);
-    const body = Hargreaves.rehearsalBody;
+    final g = Hargreaves.garnish(DateTime.now(), DateTime.now().minute, 60);
+    final body =
+        '${Hargreaves.rehearsalBody} ${g.kind}\n\nA curiosity: ${g.fact}';
     final payload = ReminderPayload(
       slot: 0,
       id: id,
       rehearsal: true,
       door: profile.reminderStyle == ReminderStyle.door,
     ).encode();
-    final details = _details(profile, ReminderKind.glass);
+    final details = _details(profile, ReminderKind.glass, body: body);
     if (delay == Duration.zero) {
       await _plugin.show(
         id: id,
@@ -228,7 +230,7 @@ class Notifications {
     await _plugin.zonedSchedule(
       id: r.id,
       scheduledDate: tz.TZDateTime.from(r.at, tz.local),
-      notificationDetails: _details(profile, r.kind),
+      notificationDetails: _details(profile, r.kind, body: r.body),
       androidScheduleMode: exact
           ? AndroidScheduleMode.exactAllowWhileIdle
           : AndroidScheduleMode.inexactAllowWhileIdle,
@@ -244,7 +246,7 @@ class Notifications {
     );
   }
 
-  NotificationDetails _details(Profile p, ReminderKind kind) {
+  NotificationDetails _details(Profile p, ReminderKind kind, {String? body}) {
     final door =
         p.reminderStyle == ReminderStyle.door && kind != ReminderKind.followUp;
     final channel = Channels.pick(
@@ -269,7 +271,10 @@ class Notifications {
             : AndroidNotificationCategory.reminder,
         fullScreenIntent: door,
         visibility: NotificationVisibility.public,
-        styleInformation: const DefaultStyleInformation(true, true),
+        // Expanding the note reveals the kind word and the curiosity.
+        styleInformation: body == null
+            ? const DefaultStyleInformation(true, true)
+            : BigTextStyleInformation(body),
         actions: const [
           AndroidNotificationAction(ReminderAction.thankYou, 'Thank you'),
           AndroidNotificationAction(ReminderAction.snooze, 'In 15 minutes'),

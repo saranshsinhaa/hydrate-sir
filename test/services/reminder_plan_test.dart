@@ -20,6 +20,7 @@ void main() {
     expect(today.where((x) => x.kind == ReminderKind.followUp).length, 12);
     expect(today.first.at, DateTime(2026, 11, 7, 7));
     expect(today.first.body, contains('first glass'));
+    expect(today.first.body, contains('A curiosity: '));
   });
 
   test('glasses already taken are not reminded', () {

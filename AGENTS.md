@@ -116,6 +116,7 @@ scripts/          setup.sh, check.sh
 - **No attribution of any kind:** no `Co-Authored-By`, no "Generated with …", no tool or AI names.
 - The `commit-msg` hook rejects anything else.
 - Releases are tag-based (`vX.Y.Z`): pushing a tag builds and publishes the APK.
+- **Before tagging, run a release build on a real phone** (`flutter build apk --release`, then install it): open the app, finish onboarding, rehearse a reminder and press Thank you. Release builds shrink and optimise code and resources, so debug testing alone is not enough.
 
 ## 9. Hargreaves' voice: Victorian English
 

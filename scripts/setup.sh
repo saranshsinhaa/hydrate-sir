@@ -15,12 +15,12 @@ need() {
   fi
 }
 
-need flutter "see docs/SETUP.md"
-need java "install JDK 17, see docs/SETUP.md"
-need adb "install Android platform-tools, see docs/SETUP.md"
+need flutter "see docs/development.md"
+need java "install JDK 17, see docs/development.md"
+need adb "install Android platform-tools, see docs/development.md"
 
 if [[ -z "${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}" ]]; then
-  echo "✗ ANDROID_HOME is not set, see docs/SETUP.md"
+  echo "✗ ANDROID_HOME is not set, see docs/development.md"
   missing=1
 fi
 

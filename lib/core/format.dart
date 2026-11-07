@@ -1,4 +1,4 @@
-/// Household number and time formats (DESIGN.md §3).
+/// Household number and time formats (docs/design.md §3).
 library;
 
 /// 2800 → "2 800". Thousands are separated by a space.

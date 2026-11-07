@@ -1,6 +1,6 @@
 import 'profile.dart';
 
-/// Hargreaves' suggested daily amount (DESIGN.md §8).
+/// Hargreaves' suggested daily amount (docs/design.md §8).
 int suggestedDailyMl({
   required int weightKg,
   required int age,

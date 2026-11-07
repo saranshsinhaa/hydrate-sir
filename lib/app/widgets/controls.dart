@@ -7,7 +7,7 @@ import '../theme/text_styles.dart';
 import '../theme/tokens.dart';
 import 'surfaces.dart';
 
-/// Primary button: ink fill, typed label, 60 px tall, square (DESIGN.md §5.4).
+/// Primary button: ink fill, typed label, 60 px tall, square (docs/design.md §5.4).
 class InkButton extends StatelessWidget {
   const InkButton({
     super.key,
@@ -173,7 +173,7 @@ class ChipOption<T> {
   final String? semanticLabel;
 }
 
-/// Equal-width square option chips (DESIGN.md §5.5).
+/// Equal-width square option chips (docs/design.md §5.5).
 class ChoiceChips<T> extends StatelessWidget {
   const ChoiceChips({
     super.key,
@@ -258,7 +258,7 @@ class ChoiceChips<T> extends StatelessWidget {
   }
 }
 
-/// Value with − and + buttons; holding a button repeats (DESIGN.md §5.6).
+/// Value with − and + buttons; holding a button repeats (docs/design.md §5.6).
 class InkStepper extends StatelessWidget {
   const InkStepper({
     super.key,
@@ -389,7 +389,7 @@ class _RepeatButtonState extends State<_RepeatButton> {
   }
 }
 
-/// Pill toggle (DESIGN.md §5.7).
+/// Pill toggle (docs/design.md §5.7).
 class InkSwitch extends StatelessWidget {
   const InkSwitch({super.key, required this.value});
 
@@ -479,7 +479,7 @@ class ToggleRow extends StatelessWidget {
   }
 }
 
-/// Settings row: label left, typed value right, chevron (DESIGN.md §5.8).
+/// Settings row: label left, typed value right, chevron (docs/design.md §5.8).
 class InstructionRow extends StatelessWidget {
   const InstructionRow({
     super.key,
@@ -523,7 +523,7 @@ class InstructionRow extends StatelessWidget {
   }
 }
 
-/// Text-only bottom navigation (DESIGN.md §5.9).
+/// Text-only bottom navigation (docs/design.md §5.9).
 class LedgerTabs extends StatelessWidget {
   const LedgerTabs({
     super.key,

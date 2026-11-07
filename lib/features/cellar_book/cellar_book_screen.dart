@@ -40,7 +40,7 @@ final ledgerTotalsProvider = StreamProvider<Map<DateTime, int>>((ref) {
       );
 });
 
-/// 7 · The Cellar Book (DESIGN.md §6).
+/// 7 · The Cellar Book (docs/design.md §6).
 class CellarBookScreen extends ConsumerWidget {
   const CellarBookScreen({super.key});
 

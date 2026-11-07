@@ -6,7 +6,7 @@ import 'surfaces.dart';
 
 enum GlassState { upcoming, taken, overdue }
 
-/// One glass in the day's row (DESIGN.md §5.3).
+/// One glass in the day's row (docs/design.md §5.3).
 class GlassSlot extends StatelessWidget {
   const GlassSlot({
     super.key,

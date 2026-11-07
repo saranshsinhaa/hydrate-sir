@@ -2,7 +2,7 @@ import 'package:flutter/painting.dart';
 
 import 'tokens.dart';
 
-/// Type scale from DESIGN.md §3.
+/// Type scale from docs/design.md §3.
 ///
 /// "Hargreaves speaks in Caslon italic; the household's records are typed in
 /// Courier."

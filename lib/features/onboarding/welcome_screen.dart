@@ -6,7 +6,7 @@ import '../../app/widgets/widgets.dart';
 import '../../copy/text.dart';
 import 'particulars_screen.dart';
 
-/// 1 · Welcome (DESIGN.md §6).
+/// 1 · Welcome (docs/design.md §6).
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 

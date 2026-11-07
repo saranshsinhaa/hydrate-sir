@@ -3,7 +3,7 @@ import '../core/hydration.dart';
 import '../core/profile.dart';
 import 'curiosities.dart';
 
-/// Everything Hargreaves says that depends on circumstance (DESIGN.md §7).
+/// Everything Hargreaves says that depends on circumstance (docs/design.md §7).
 /// Fixed screen copy lives beside it in `lib/copy/`.
 class Hargreaves {
   const Hargreaves(this.address, {this.name = ''});
@@ -78,7 +78,7 @@ class Hargreaves {
     return capitalise(s);
   }
 
-  // Reminders (DESIGN.md §9).
+  // Reminders (docs/design.md §9).
 
   String reminderTitle(int glassMl) => 'Your $glassMl ml, $you.';
 
@@ -131,7 +131,7 @@ class Hargreaves {
   String get halfwayPraise =>
       "Half the day's water by noon. Most commendable, $you.";
 
-  // The Cellar Book (DESIGN.md §7).
+  // The Cellar Book (docs/design.md §7).
 
   /// [metRatio] is null when there are no complete days yet.
   String cellarRemark({

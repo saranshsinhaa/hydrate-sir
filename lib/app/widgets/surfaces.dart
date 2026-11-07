@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../theme/text_styles.dart';
 import '../theme/tokens.dart';
 
-/// The double-ruled label card (DESIGN.md §5.1).
+/// The double-ruled label card (docs/design.md §5.1).
 class LabelCard extends StatelessWidget {
   const LabelCard({
     super.key,
@@ -142,7 +142,7 @@ class _DashedLinePainter extends CustomPainter {
       old.color != color || old.thickness != thickness;
 }
 
-/// Thin progress bar at the foot of the Today card (DESIGN.md §5.10).
+/// Thin progress bar at the foot of the Today card (docs/design.md §5.10).
 class ProgressRule extends StatelessWidget {
   const ProgressRule({super.key, required this.fraction});
 
@@ -173,7 +173,7 @@ class ProgressRule extends StatelessWidget {
   }
 }
 
-/// A 4-point star between two ink rules (DESIGN.md §5.12).
+/// A 4-point star between two ink rules (docs/design.md §5.12).
 class Ornament extends StatelessWidget {
   const Ornament({super.key, this.width});
 
@@ -237,7 +237,7 @@ class Eyebrow extends StatelessWidget {
   }
 }
 
-/// A rubber stamp (DESIGN.md §5.2). Decorative: excluded from semantics.
+/// A rubber stamp (docs/design.md §5.2). Decorative: excluded from semantics.
 /// Re-stamps (scale and settle) whenever [text] changes.
 class Stamp extends StatelessWidget {
   const Stamp(this.text, {super.key, this.angle = -7, this.fontSize = 13});

@@ -12,7 +12,7 @@ import '../../core/profile.dart';
 import 'hours_screen.dart';
 import 'onboarding_draft.dart';
 
-/// 2 · A Few Particulars (DESIGN.md §6).
+/// 2 · A Few Particulars (docs/design.md §6).
 class ParticularsScreen extends ConsumerWidget {
   const ParticularsScreen({super.key});
 

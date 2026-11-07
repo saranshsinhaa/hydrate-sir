@@ -11,7 +11,7 @@ import '../../core/profile.dart';
 import 'arrangements_screen.dart';
 import 'onboarding_draft.dart';
 
-/// 3 · Your Hours (DESIGN.md §6).
+/// 3 · Your Hours (docs/design.md §6).
 class HoursScreen extends ConsumerWidget {
   const HoursScreen({super.key});
 

@@ -86,7 +86,8 @@ lib/
 assets/fonts/
 test/             mirrors lib/
 integration_test/ on-device flows
-docs/             SETUP.md
+docs/             development.md, design.md, screenshots/
+tool/screenshots/ renders the README screenshots
 scripts/          setup.sh, check.sh
 .githooks/        pre-commit, commit-msg, pre-push
 ```
@@ -96,7 +97,7 @@ scripts/          setup.sh, check.sh
 
 ## 7. Design
 
-**[DESIGN.md](DESIGN.md) is the full specification** (colours, type, components, screens, copy, logic, reminders). Read it before building any UI or copy. The summary below is for quick reference; DESIGN.md wins if they differ.
+**[docs/design.md](docs/design.md) is the full specification** (colours, type, components, screens, copy, logic, reminders). Read it before building any UI or copy. The summary below is for quick reference; docs/design.md wins if they differ.
 
 - **Colours:** paper `#E9E1CC`, card `#F7F2E4`, bottle green `#1F3B2D`, deep green `#16291F`, stamp red `#A3271F`, rule line `#CFC5AA`.
 - **Fonts:** Libre Caslon Text for body and headings; Courier Prime for labels, numbers and buttons (uppercase, letter-spaced). Both are SIL Open Font License; ship the licence files.
@@ -137,7 +138,13 @@ All user-facing text, including notifications, errors, empty states, permission 
 - Notification actions (Thank you / In 15 minutes / Not now) work without opening the app.
 - Reference test device: Nothing Phone (3), Android 17.
 
-## 11. Working style
+## 11. Public docs
+
+- `README.md` is for people who want to **use** the app, written in Hargreaves' voice. No build or release instructions there.
+- Developer setup lives in `docs/development.md`; keep it short.
+- When a screen changes, regenerate the README screenshots: `flutter test tool/screenshots --update-goldens`. They use made-up data; never use real device screenshots with personal details.
+
+## 12. Working style
 
 - Read the relevant code and this file before changing anything.
 - Make the smallest change that does the job; don't refactor unrelated code.

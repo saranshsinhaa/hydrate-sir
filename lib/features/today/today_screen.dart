@@ -15,7 +15,7 @@ import '../../core/profile.dart';
 import '../battery/battery_guide.dart';
 import 'amount_sheet.dart';
 
-/// 5 · Today (DESIGN.md §6).
+/// 5 · Today (docs/design.md §6).
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
 

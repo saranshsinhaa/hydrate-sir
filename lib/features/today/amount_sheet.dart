@@ -5,7 +5,7 @@ import '../../app/theme/tokens.dart';
 import '../../app/widgets/widgets.dart';
 import '../../copy/text.dart';
 
-/// Amounts offered for "I had a different amount" (DESIGN.md §6).
+/// Amounts offered for "I had a different amount" (docs/design.md §6).
 const presetAmounts = [150, 250, 330, 500, 750];
 
 /// Asks how much the user drank. Returns millilitres, or null if dismissed.

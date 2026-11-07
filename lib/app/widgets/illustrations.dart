@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/tokens.dart';
 
-/// A glass of water on a silver tray (DESIGN.md §5.12), drawn on a
+/// A glass of water on a silver tray (docs/design.md §5.12), drawn on a
 /// 220 × 150 grid and scaled to fit.
 class TrayIllustration extends StatelessWidget {
   const TrayIllustration({super.key, this.width = 220, this.onDark = false});

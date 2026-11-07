@@ -91,7 +91,7 @@ ThemeData buildTheme() {
   );
 }
 
-/// Plain 200 ms fade between screens (DESIGN.md §10). No sliding.
+/// Plain 200 ms fade between screens (docs/design.md §10). No sliding.
 class _FadeTransitionsBuilder extends PageTransitionsBuilder {
   const _FadeTransitionsBuilder();
 

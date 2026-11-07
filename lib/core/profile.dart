@@ -5,7 +5,7 @@ enum Exertion { leisurely, moderate, vigorous }
 
 enum Climate { temperate, warm }
 
-/// How reminders appear (DESIGN.md §9).
+/// How reminders appear (docs/design.md §9).
 enum ReminderStyle {
   /// A notification in the panel.
   note,

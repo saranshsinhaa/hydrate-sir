@@ -18,7 +18,7 @@ import '../onboarding/particulars_screen.dart';
 /// Set by CI from the release tag.
 const appVersion = String.fromEnvironment('APP_VERSION', defaultValue: 'dev');
 
-/// 8 · Standing Instructions (DESIGN.md §6).
+/// 8 · Standing Instructions (docs/design.md §6).
 class InstructionsScreen extends ConsumerWidget {
   const InstructionsScreen({super.key});
 
@@ -186,7 +186,9 @@ class InstructionsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 14),
           Text(
-            'Hydrate, Sir v$appVersion · Hargreaves, butler',
+            appVersion == 'dev'
+                ? 'Hydrate, Sir · Hargreaves, butler'
+                : 'Hydrate, Sir v$appVersion · Hargreaves, butler',
             textAlign: TextAlign.center,
             style: HsText.courier(12),
           ),

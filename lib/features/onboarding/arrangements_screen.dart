@@ -13,7 +13,7 @@ import '../../core/hydration.dart';
 import '../../core/profile.dart';
 import 'onboarding_draft.dart';
 
-/// 4 · The Arrangements (DESIGN.md §6).
+/// 4 · The Arrangements (docs/design.md §6).
 class ArrangementsScreen extends ConsumerWidget {
   const ArrangementsScreen({super.key});
 

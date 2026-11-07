@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
 
-/// Colour tokens from DESIGN.md §2. Flat colours only.
+/// Colour tokens from docs/design.md §2. Flat colours only.
 abstract final class HsColors {
   static const paper = Color(0xFFE9E1CC);
   static const label = Color(0xFFF7F2E4);
@@ -21,7 +21,7 @@ abstract final class HsFonts {
   static const mono = 'CourierPrime';
 }
 
-/// Spacing scale from DESIGN.md §4.
+/// Spacing scale from docs/design.md §4.
 abstract final class HsSpace {
   static const double xs = 4;
   static const double s = 8;
@@ -37,7 +37,7 @@ abstract final class HsSpace {
   static const double target = 48;
 }
 
-/// Border widths from DESIGN.md §4.
+/// Border widths from docs/design.md §4.
 abstract final class HsStroke {
   static const double interactive = 1.5;
   static const double outer = 2;

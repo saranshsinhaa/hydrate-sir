@@ -15,7 +15,7 @@ import '../../core/hydration.dart';
 import '../../services/notifications.dart';
 
 /// "At the door": the full-screen reminder shown over the lock screen
-/// (DESIGN.md §9).
+/// (docs/design.md §9).
 class DoorScreen extends ConsumerStatefulWidget {
   const DoorScreen({super.key, required this.payload});
 

@@ -1,4 +1,4 @@
-/// Figures for The Cellar Book. Only complete days count (DESIGN.md §6).
+/// Figures for The Cellar Book. Only complete days count (docs/design.md §6).
 class LedgerStats {
   const LedgerStats({
     required this.days,

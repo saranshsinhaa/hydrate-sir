@@ -83,3 +83,16 @@ abstract final class TodayText {
   static const record = 'Record it';
   static const allServed = 'All\nserved';
 }
+
+abstract final class BatteryText {
+  static const title = 'The battery warden';
+  static const exempt = 'Leaves me be';
+  static const restricts = 'May delay me';
+  static const showMe = 'Show me how';
+  static const neverMind = 'Never mind';
+  static const openSettings = 'Open the settings';
+  static const steps =
+      'In the page I shall open, choose Battery (on some phones, App '
+      'battery usage) and set it to Unrestricted. Then press back, and I '
+      'shall be at your service on the minute.';
+}

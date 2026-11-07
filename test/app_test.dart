@@ -234,4 +234,46 @@ void main() {
       await h.dispose(tester);
     });
   });
+
+  group('battery warden', () {
+    testWidgets('Today explains and leads to the settings', (tester) async {
+      usePhone(tester);
+      final h = await Harness.create(profile: const Profile(onboarded: true));
+      h.battery.exempt = false;
+      await tester.pumpWidget(h.app());
+      await settle(tester);
+      expect(find.textContaining('battery warden'), findsOneWidget);
+      await tapText(tester, 'Show me how');
+      expect(find.textContaining('set it to Unrestricted'), findsOneWidget);
+      await tapText(tester, 'OPEN THE SETTINGS');
+      expect(h.battery.opened, 1);
+      await h.dispose(tester);
+    });
+
+    testWidgets('never mind puts the note away for good', (tester) async {
+      usePhone(tester);
+      final h = await Harness.create(profile: const Profile(onboarded: true));
+      h.battery.exempt = false;
+      await tester.pumpWidget(h.app());
+      await settle(tester);
+      await tapText(tester, 'Never mind');
+      expect(find.textContaining('battery warden who'), findsNothing);
+      expect(
+        h.prefs.getString('profile.v1'),
+        contains('"batteryNoteDismissed":true'),
+      );
+      await h.dispose(tester);
+    });
+
+    testWidgets('no note when the phone already leaves Hargreaves be', (
+      tester,
+    ) async {
+      usePhone(tester);
+      final h = await Harness.create(profile: const Profile(onboarded: true));
+      await tester.pumpWidget(h.app());
+      await settle(tester);
+      expect(find.textContaining('battery warden who'), findsNothing);
+      await h.dispose(tester);
+    });
+  });
 }

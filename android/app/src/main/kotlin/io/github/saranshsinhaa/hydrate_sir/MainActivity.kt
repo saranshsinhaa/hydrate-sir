@@ -1,8 +1,12 @@
 package io.github.saranshsinhaa.hydrate_sir
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -30,6 +34,26 @@ class MainActivity : FlutterActivity() {
                     "release" -> {
                         setLockScreen(false)
                         if (call.argument<Boolean>("moveToBack") == true) moveTaskToBack(true)
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+        // Battery: whether Android may hold back reminders, and the way to
+        // the settings page where the user can exempt us.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "hydrate_sir/battery")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "isExempt" -> {
+                        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+                        result.success(pm.isIgnoringBatteryOptimizations(packageName))
+                    }
+                    "openSettings" -> {
+                        val intent = Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", packageName, null),
+                        ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
                         result.success(null)
                     }
                     else -> result.notImplemented()

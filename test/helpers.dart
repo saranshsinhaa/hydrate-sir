@@ -9,6 +9,7 @@ import 'package:hydrate_sir/app/providers.dart';
 import 'package:hydrate_sir/app/reminders.dart';
 import 'package:hydrate_sir/core/profile.dart';
 import 'package:hydrate_sir/data/database.dart';
+import 'package:hydrate_sir/services/battery.dart';
 import 'package:hydrate_sir/services/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -78,8 +79,23 @@ class FakeNotifications extends Notifications {
   }) async => rehearsals.add(delay);
 }
 
+class FakeBattery extends Battery {
+  FakeBattery();
+
+  bool exempt = true;
+  int opened = 0;
+
+  @override
+  Future<bool> isExempt() async => exempt;
+
+  @override
+  Future<void> openSettings() async => opened++;
+}
+
 class Harness {
   Harness._(this.prefs, this.db, this.notifications, this.now);
+
+  final battery = FakeBattery();
 
   final SharedPreferences prefs;
   final AppDatabase db;
@@ -114,6 +130,7 @@ class Harness {
       sharedPrefsProvider.overrideWithValue(prefs),
       databaseProvider.overrideWithValue(db),
       notificationsProvider.overrideWithValue(notifications),
+      batteryProvider.overrideWithValue(battery),
       clockProvider.overrideWithValue(() => now),
       nowProvider.overrideWith((ref) => Stream.value(now)),
     ],

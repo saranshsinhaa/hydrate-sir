@@ -10,6 +10,7 @@ import '../../copy/hargreaves.dart';
 import '../../core/format.dart';
 import '../../core/hydration.dart';
 import '../../core/profile.dart';
+import '../battery/battery_guide.dart';
 import '../onboarding/arrangements_screen.dart';
 import '../onboarding/hours_screen.dart';
 import '../onboarding/particulars_screen.dart';
@@ -155,6 +156,7 @@ class InstructionsScreen extends ConsumerWidget {
             onChanged: (v) =>
                 notifier.update((x) => x.copyWith(respectSilent: v)),
           ),
+          const BatteryRow(),
           InstructionRow(
             label: 'Punctuality',
             value: punctual ? 'On the minute' : 'Within a few minutes',

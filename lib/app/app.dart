@@ -61,7 +61,8 @@ class _HydrateSirAppState extends ConsumerState<HydrateSirApp>
       ..invalidate(nowProvider)
       ..invalidate(todayEntriesProvider)
       ..invalidate(notificationsEnabledProvider)
-      ..invalidate(punctualProvider);
+      ..invalidate(punctualProvider)
+      ..invalidate(batteryExemptProvider);
     ref.read(reminderSyncProvider).schedule();
   }
 

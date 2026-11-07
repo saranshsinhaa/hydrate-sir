@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/profile.dart';
+import '../services/battery.dart';
 import '../services/notifications.dart';
 import 'providers.dart';
 
@@ -16,6 +17,13 @@ final notificationsEnabledProvider = FutureProvider<bool>(
 /// Whether Android lets reminders arrive on the minute.
 final punctualProvider = FutureProvider<bool>(
   (ref) => ref.watch(notificationsProvider).canBePunctual(),
+);
+
+final batteryProvider = Provider<Battery>((ref) => const Battery());
+
+/// Whether Android leaves the app alone to keep its appointments.
+final batteryExemptProvider = FutureProvider<bool>(
+  (ref) => ref.watch(batteryProvider).isExempt(),
 );
 
 /// Keeps scheduled reminders in step with the profile and today's glasses.

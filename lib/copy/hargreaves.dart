@@ -137,6 +137,15 @@ class Hargreaves {
     return 'A quieter $span, $you. Tomorrow is, as ever, another day.';
   }
 
+  String get batteryNote =>
+      'Forgive me, $you, but your telephone keeps a battery warden who may '
+      'hold me at the door when I am due.';
+
+  String get batteryExplain =>
+      'To save power, Android sometimes delays my reminders by many minutes, '
+      'or quite forgets them. If you will exempt me, $you, I shall arrive '
+      'punctually.';
+
   String burnQuestion() =>
       'Burn the Cellar Book, $you? Every record shall be lost to the flames.';
 

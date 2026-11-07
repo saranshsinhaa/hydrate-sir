@@ -328,3 +328,7 @@ Departures from the original mockups, made for the user's sake:
 | 11 | "Rehearse it now" waits ten seconds for "At the door" | Full screen only shows over a locked phone |
 | 12 | A full-screen reminder answered in the app is cleared from the shade, and only unanswered reminders open the door | No stale or repeated knocks |
 | 13 | Cellar Book lists days only from the first record, and says "Today's glasses go into the book tonight" before any complete day | New users aren't shown a column of zeros |
+| 14 | Battery note on Today and a "battery warden" row in Instructions | Nothing OS and others delay alarms to save power |
+| 15 | Each reminder brings a kind word and a curiosity, bundled with the app | Something pleasant on the tray, not just a demand |
+| 16 | In-app updates from GitHub Releases: daily automatic check (can be turned off), manual "Enquire now", never downloads unasked, SHA-256 verified | Updating a sideloaded app should be one tap; the only network use, and nothing about the user is sent |
+| 17 | Hargreaves explains before sending the user to "Install unknown apps", and carries on by himself on return | Being dropped into a settings page without a word is alarming |

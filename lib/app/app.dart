@@ -66,7 +66,9 @@ class _HydrateSirAppState extends ConsumerState<HydrateSirApp>
       ..invalidate(punctualProvider)
       ..invalidate(batteryExemptProvider);
     ref.read(reminderSyncProvider).schedule();
-    ref.read(updateControllerProvider.notifier).autoCheck();
+    final updates = ref.read(updateControllerProvider.notifier);
+    updates.resumeAfterPermission();
+    updates.autoCheck();
   }
 
   Future<void> _onResponse(NotificationResponse r) async {

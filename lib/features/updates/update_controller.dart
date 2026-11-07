@@ -111,8 +111,8 @@ class UpdateController extends Notifier<UpdateState> {
     };
     if (release == null) return;
     if (!await _service.canInstall()) {
+      // Hargreaves explains first; the user opens the settings from there.
       state = UpdateNeedsPermission(release);
-      await _service.openInstallSettings();
       return;
     }
     state = UpdateDownloading(release, 0);
@@ -134,6 +134,16 @@ class UpdateController extends Notifier<UpdateState> {
     }
   }
 
+  /// Opens Android's "install unknown apps" page for this app.
+  Future<void> openInstallSettings() => _service.openInstallSettings();
+
+  /// Back from the settings page: carry on if permission was granted.
+  Future<void> resumeAfterPermission() async {
+    if (state is UpdateNeedsPermission && await _service.canInstall()) {
+      await fetch();
+    }
+  }
+
   /// "Later": don't mention this edition on Today again.
   Future<void> dismiss() async {
     final s = state;
@@ -148,7 +158,11 @@ class UpdateController extends Notifier<UpdateState> {
   /// Whether Today should mention the edition on offer.
   bool get announce {
     final s = state;
-    if (s is! UpdateAvailable) return state is UpdateDownloading;
+    if (s is! UpdateAvailable) {
+      return s is UpdateDownloading ||
+          s is UpdateNeedsPermission ||
+          (s is UpdateFailed && s.release != null);
+    }
     return ref.read(sharedPrefsProvider).getString(_dismissedKey) !=
         s.release.version;
   }

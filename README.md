@@ -27,7 +27,7 @@ I do not nag. I do not scold. I apologise before interrupting, and I keep quiet 
 <tr>
 <td valign="top"><img src="docs/screenshots/cellar-book.png" alt="The Cellar Book: a week of bars against the agreed amount"><br><b>The Cellar Book.</b> A plain record of each day, week and month, with an honest remark and never a scolding.</td>
 <td valign="top"><img src="docs/screenshots/instructions.png" alt="Standing Instructions: manners and reminder settings"><br><b>Standing Instructions.</b> Amend anything you please: your hours, the size of each glass, whether I chime, and whether I ask again if ignored.</td>
-<td valign="top"><br><b>Particulars, kept private.</b> I have no telephone line to the outside world. The app asks for no internet access at all, keeps no account and sends nothing anywhere. Your records never leave this house.</td>
+<td valign="top"><br><b>Particulars, kept private.</b> I keep no account and send nothing about you anywhere. My only errand outside is to ask GitHub, once a day at most, whether a new edition of myself has been published. Your records never leave this house.</td>
 </tr>
 </table>
 
@@ -38,7 +38,11 @@ I do not nag. I do not scold. I apologise before interrupting, and I keep quiet 
 3. Open **Hydrate, Sir**, answer my few questions, and accept the arrangements.
 4. When Android asks whether I may send notifications, do say yes. I shall also ask leave to arrive *on the minute*; that is worth granting too.
 
-Should you wish to be told of new versions, the free app [Obtainium](https://github.com/ImranR98/Obtainium) can watch the Releases page on your behalf.
+## New editions
+
+I look for new editions of myself once a day and mention them on Today. Press **Fetch and install** and I shall bring it in; Android will ask you to confirm. The first time, Android will want you to permit me to install apps (*Allow from this source*), and Google Play Protect may offer to scan me, as it does with any app not from the Play Store.
+
+I check each download against its published fingerprint before handing it over, and Android itself refuses any edition not signed by my maker. Should you prefer I never look, turn off **Instructions › Look for new editions daily**; **Enquire now** asks by hand.
 
 ## Should I keep you waiting
 
@@ -57,8 +61,10 @@ I shall then be entirely punctual.
 | Alarms and reminders | To arrive on the minute rather than roughly |
 | Full-screen notifications | Only if you choose "At the door" |
 | Run at start-up | To resume my duties after the telephone restarts |
+| Internet | Only to ask GitHub whether a new edition exists, and to fetch it |
+| Install apps | Only to install a new edition you asked me to fetch |
 
-Nothing more. I never ask for internet access, your location, your contacts or your files.
+Nothing more. I never ask for your location, your contacts or your files, and I send nothing about you anywhere.
 
 ## A word of caution
 

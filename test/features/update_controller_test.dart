@@ -98,17 +98,30 @@ void main() {
     expect(service.checks, 0);
   });
 
-  test('without install permission, Android settings are opened', () async {
-    service.published = edition('1.1.0');
-    service.mayInstall = false;
-    final c = await container();
-    final n = c.read(updateControllerProvider.notifier);
-    await n.check();
-    await n.fetch();
-    expect(c.read(updateControllerProvider), isA<UpdateNeedsPermission>());
-    expect(service.settingsOpened, 1);
-    expect(service.installs, isEmpty);
-  });
+  test(
+    'without install permission, Hargreaves asks, then carries on',
+    () async {
+      service.published = edition('1.1.0');
+      service.mayInstall = false;
+      final c = await container();
+      final n = c.read(updateControllerProvider.notifier);
+      await n.check();
+      await n.fetch();
+      expect(c.read(updateControllerProvider), isA<UpdateNeedsPermission>());
+      expect(service.settingsOpened, 0, reason: 'explains before opening');
+      expect(n.announce, isTrue);
+
+      await n.openInstallSettings();
+      expect(service.settingsOpened, 1);
+
+      await n.resumeAfterPermission();
+      expect(service.installs, isEmpty, reason: 'still not permitted');
+
+      service.mayInstall = true;
+      await n.resumeAfterPermission();
+      expect(c.read(updateControllerProvider), isA<UpdateInstalling>());
+    },
+  );
 
   test('fetch downloads, verifies and hands over to the installer', () async {
     service.published = edition('1.1.0');

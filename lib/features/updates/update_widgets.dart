@@ -57,7 +57,12 @@ class UpdateSection extends ConsumerWidget {
         Wrap(
           spacing: 16,
           children: [
-            if (_canFetch(s))
+            if (s is UpdateNeedsPermission)
+              InkLink(
+                text: UpdateText.openSettings,
+                onTap: c.openInstallSettings,
+              )
+            else if (_canFetch(s))
               InkLink(text: UpdateText.fetch, onTap: c.fetch)
             else if (s is! UpdateChecking && s is! UpdateDownloading)
               InkLink(text: UpdateText.checkNow, onTap: c.check),
@@ -102,7 +107,13 @@ class UpdateNote extends ConsumerWidget {
               Wrap(
                 spacing: 16,
                 children: [
-                  InkLink(text: UpdateText.fetch, onTap: c.fetch),
+                  if (s is UpdateNeedsPermission)
+                    InkLink(
+                      text: UpdateText.openSettings,
+                      onTap: c.openInstallSettings,
+                    )
+                  else
+                    InkLink(text: UpdateText.fetch, onTap: c.fetch),
                   InkLink(text: UpdateText.later, onTap: c.dismiss),
                 ],
               ),

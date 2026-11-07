@@ -172,6 +172,12 @@ class Notifications {
 
   Future<void> dismiss(int id) => _plugin.cancel(id: id);
 
+  /// Whether a reminder is still waiting in the notification shade.
+  Future<bool> isShowing(int id) async {
+    final active = await _plugin.getActiveNotifications();
+    return active.any((n) => n.id == id);
+  }
+
   /// A rehearsal reminder for trying the styles from Standing Instructions.
   /// "At the door" only shows in full over a locked screen, so it can be
   /// delayed to give the user time to lock the phone.

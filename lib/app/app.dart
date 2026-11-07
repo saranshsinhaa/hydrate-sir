@@ -77,9 +77,15 @@ class _HydrateSirAppState extends ConsumerState<HydrateSirApp>
       );
       return;
     }
-    if (payload != null &&
+    // Android keeps reporting the reminder that launched the app; only open
+    // the door for one that hasn't been answered yet.
+    final unanswered =
+        payload != null &&
+        await ref.read(notificationsProvider).isShowing(payload.id);
+    if (unanswered &&
         payload.door &&
-        ref.read(profileProvider).onboarded) {
+        ref.read(profileProvider).onboarded &&
+        mounted) {
       await _navigator.currentState?.push(
         MaterialPageRoute<void>(
           fullscreenDialog: true,

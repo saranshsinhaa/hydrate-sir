@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrate_sir/core/profile.dart';
 import 'package:hydrate_sir/features/reminder/door_screen.dart';
@@ -98,7 +99,7 @@ void main() {
       findsOneWidget,
     );
 
-    await h.db.close();
+    await h.dispose(tester);
   });
 
   testWidgets('logging and undoing a glass on Today', (tester) async {
@@ -129,7 +130,7 @@ void main() {
     await settle(tester);
     expect(find.text('0 OF 12\nTAKEN'), findsOneWidget);
 
-    await h.db.close();
+    await h.dispose(tester);
   });
 
   testWidgets('blocked notifications are explained on Today', (tester) async {
@@ -139,7 +140,7 @@ void main() {
     await tester.pumpWidget(h.app());
     await settle(tester);
     expect(find.textContaining('I am forbidden to knock'), findsOneWidget);
-    await h.db.close();
+    await h.dispose(tester);
   });
 
   testWidgets('standing instructions change manners and reminder style', (
@@ -159,7 +160,7 @@ void main() {
     await tapText(tester, 'A chime with each reminder');
     expect(h.prefs.getString('profile.v1'), contains('"chime":false'));
 
-    await h.db.close();
+    await h.dispose(tester);
   });
 
   testWidgets('cellar book greets an empty ledger kindly', (tester) async {
@@ -170,7 +171,7 @@ void main() {
     await tapText(tester, 'Cellar Book');
     expect(find.text('The Cellar Book'), findsOneWidget);
     expect(find.textContaining('awaits its first entry'), findsOneWidget);
-    await h.db.close();
+    await h.dispose(tester);
   });
 
   testWidgets('door screen: a rehearsal is labelled, and taking it logs', (
@@ -202,6 +203,35 @@ void main() {
     );
     expect(rows, hasLength(1));
     expect(find.byType(DoorScreen), findsNothing);
-    await h.db.close();
+    await h.dispose(tester);
+  });
+
+  group('launched by a full-screen reminder', () {
+    NotificationResponse launch(int id) => NotificationResponse(
+      notificationResponseType: NotificationResponseType.selectedNotification,
+      id: id,
+      payload: ReminderPayload(slot: 2, door: true, id: id).encode(),
+    );
+
+    testWidgets('opens the door for an unanswered reminder', (tester) async {
+      usePhone(tester);
+      final h = await Harness.create(profile: const Profile(onboarded: true));
+      h.notifications.showing.add(1002);
+      await tester.pumpWidget(h.app(launch: launch(1002)));
+      await settle(tester);
+      expect(find.byType(DoorScreen), findsOneWidget);
+      expect(find.text('GLASS 3 OF 12 · 250 ml'), findsOneWidget);
+      await h.dispose(tester);
+    });
+
+    testWidgets('stays shut once the reminder was answered', (tester) async {
+      usePhone(tester);
+      final h = await Harness.create(profile: const Profile(onboarded: true));
+      await tester.pumpWidget(h.app(launch: launch(1002)));
+      await settle(tester);
+      expect(find.byType(DoorScreen), findsNothing);
+      expect(find.text('TAKEN TODAY'), findsOneWidget);
+      await h.dispose(tester);
+    });
   });
 }

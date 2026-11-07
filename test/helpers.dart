@@ -1,6 +1,8 @@
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hydrate_sir/app/app.dart';
 import 'package:hydrate_sir/app/providers.dart';
@@ -58,6 +60,12 @@ class FakeNotifications extends Notifications {
 
   final dismissed = <int>[];
 
+  /// Ids of reminders currently in the shade.
+  final showing = <int>{};
+
+  @override
+  Future<bool> isShowing(int id) async => showing.contains(id);
+
   @override
   Future<void> dismiss(int id) async => dismissed.add(id);
 
@@ -93,7 +101,15 @@ class Harness {
     );
   }
 
-  Widget app() => ProviderScope(
+  /// Unmounts the app. The in-memory database needs no closing, and
+  /// closing it inside the fake test clock can wait forever on its I/O.
+  Future<void> dispose(WidgetTester tester) async {
+    await tester.pumpWidget(const SizedBox());
+    // Let Drift's stream clean-up timers run.
+    await tester.pump(const Duration(seconds: 1));
+  }
+
+  Widget app({NotificationResponse? launch}) => ProviderScope(
     overrides: [
       sharedPrefsProvider.overrideWithValue(prefs),
       databaseProvider.overrideWithValue(db),
@@ -101,7 +117,7 @@ class Harness {
       clockProvider.overrideWithValue(() => now),
       nowProvider.overrideWith((ref) => Stream.value(now)),
     ],
-    child: const HydrateSirApp(),
+    child: HydrateSirApp(launch: launch),
   );
 }
 

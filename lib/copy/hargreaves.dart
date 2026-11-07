@@ -55,7 +55,8 @@ class Hargreaves {
     if (next != null) {
       return 'Your next glass at ${hm(next)}, $you. Do carry on.';
     }
-    return 'Very good, $you.';
+    return 'That will be all for today, $you. Your first glass tomorrow '
+        'at ${hm(s.times.first)}.';
   }
 
   /// "A glass of 250 ml, twelve times daily".
@@ -86,17 +87,20 @@ class Hargreaves {
     required int minutes,
   }) {
     if (index == 0) {
-      return 'Good morning, $you. Your first glass, before the household '
-          'stirs.';
+      return 'Good morning. Your first glass, before the household stirs.';
     }
     if (index == count - 1) {
-      return 'The last glass of the evening, $you. Then, to bed.';
+      return 'The last glass of the evening. Then, to bed.';
     }
     return 'Forgive the intrusion. Glass ${index + 1} of $count is poured '
         'and waiting.';
   }
 
   String get followUpTitle => 'If I might, $you';
+
+  static const rehearsalBody =
+      'A rehearsal. This is how I shall announce '
+      'myself when a glass is due.';
 
   static String followUpBody(int minutes) =>
       'Your ${hm(minutes)} glass remains untouched. I trust all is well.';

@@ -40,7 +40,9 @@ class ArrangementsScreen extends ConsumerWidget {
 /// Saves the particulars, then asks Android for what reminders need, with
 /// Hargreaves explaining each request first.
 Future<void> acceptArrangements(BuildContext context, WidgetRef ref) async {
-  final profile = ref.read(onboardingDraftProvider).copyWith(onboarded: true);
+  final profile = ref
+      .read(onboardingDraftProvider)
+      .copyWith(onboarded: true, startedAt: ref.read(clockProvider)());
   final n = ref.read(notificationsProvider);
   final h = Hargreaves.of(profile);
   final nav = Navigator.of(context);
@@ -171,10 +173,9 @@ class ArrangementsForm extends StatelessWidget {
         Semantics(
           container: true,
           child: Text(
-            'I shall bring ${p.glassCount} glasses of ${p.glassSizeMl} ml, '
-                    'roughly every ${gap(p.intervalMinutes)}, from '
-                    '${hm(p.wakeMinutes)} until ${hm(p.lastGlassMinutes)}.'
-                .toUpperCase(),
+            'I SHALL BRING ${p.glassCount} GLASSES OF ${p.glassSizeMl} ml, '
+            'ROUGHLY EVERY ${gap(p.intervalMinutes).toUpperCase()}, FROM '
+            '${hm(p.wakeMinutes)} UNTIL ${hm(p.lastGlassMinutes)}.',
             style: HsText.courier(14, bold: true, tracking: 0.02, height: 1.5),
           ),
         ),

@@ -82,6 +82,11 @@ final todayTotalProvider = Provider<int>((ref) {
 
 final dayStatusProvider = Provider<DayStatus>((ref) {
   final p = ref.watch(profileProvider);
+  final start = p.startedAt;
+  final startedToday =
+      start != null &&
+      householdDay(start, p.dayBoundaryMinutes) ==
+          ref.watch(householdDayProvider);
   return DayStatus(
     times: p.glassTimes,
     totalMl: ref.watch(todayTotalProvider),
@@ -89,6 +94,9 @@ final dayStatusProvider = Provider<DayStatus>((ref) {
     glassSizeMl: p.glassSizeMl,
     nowMinutes: householdMinutes(_now(ref), p.dayBoundaryMinutes),
     sleepMinutes: p.sleepMinutes,
+    startMinutes: startedToday
+        ? householdMinutes(start, p.dayBoundaryMinutes)
+        : 0,
   );
 });
 

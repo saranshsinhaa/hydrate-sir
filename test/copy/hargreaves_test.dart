@@ -77,6 +77,22 @@ void main() {
       );
     });
 
+    test('evening with nothing left to bring', () {
+      final s = DayStatus(
+        times: const Profile().glassTimes,
+        totalMl: 0,
+        goalMl: 2800,
+        glassSizeMl: 250,
+        nowMinutes: 22 * 60 + 34,
+        sleepMinutes: 23 * 60,
+        startMinutes: 22 * 60 + 30,
+      );
+      expect(
+        sir.todayLine(s),
+        'That will be all for today, sir. Your first glass tomorrow at 07:00.',
+      );
+    });
+
     test('never nags after bedtime', () {
       expect(
         sir.todayLine(day(totalMl: 1000, now: 23 * 60 + 10)),
@@ -95,6 +111,14 @@ void main() {
       expect(r(0.5), contains('Of Wednesday, I shall say nothing'));
       expect(r(0.1), contains('another day'));
     });
+  });
+
+  test('reminder bodies leave the address to the title', () {
+    for (final i in [0, 5, 11]) {
+      final body = sir.reminderBody(index: i, count: 12, minutes: 600);
+      expect(body, isNot(contains('sir')), reason: body);
+    }
+    expect(sir.reminderTitle(250), 'Your 250 ml, sir.');
   });
 
   group('voice rules', () {

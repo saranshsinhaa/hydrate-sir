@@ -15,7 +15,7 @@ void main() {
   test('round-trips every field', () async {
     SharedPreferences.setMockInitialValues({});
     final store = ProfileStore(await SharedPreferences.getInstance());
-    const p = Profile(
+    final p = Profile(
       address: Address.name,
       name: 'Ada',
       weightKg: 61,
@@ -31,6 +31,7 @@ void main() {
       respectSilent: true,
       reminderStyle: ReminderStyle.door,
       onboarded: true,
+      startedAt: DateTime(2026, 11, 7, 22, 30),
     );
     await store.save(p);
     expect(store.load().toJson(), p.toJson());

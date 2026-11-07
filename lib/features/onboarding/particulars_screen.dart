@@ -177,6 +177,9 @@ class _NameFieldState extends State<_NameField> {
       controller: _controller,
       autofocus: widget.initial.isEmpty,
       textCapitalization: TextCapitalization.words,
+      textInputAction: TextInputAction.done,
+      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+      onSubmitted: (_) => FocusScope.of(context).unfocus(),
       maxLength: 24,
       style: HsText.body,
       decoration: const InputDecoration(

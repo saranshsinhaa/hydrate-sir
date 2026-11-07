@@ -9,10 +9,19 @@ import 'surfaces.dart';
 
 /// Primary button: ink fill, typed label, 60 px tall, square (DESIGN.md §5.4).
 class InkButton extends StatelessWidget {
-  const InkButton({super.key, required this.label, required this.onPressed});
+  const InkButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.caps = true,
+  });
 
   final String label;
   final VoidCallback? onPressed;
+
+  /// Typed in capitals. Off when the label carries its own case
+  /// ("I'VE HAD MY GLASS · 250 ml").
+  final bool caps;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +37,15 @@ class InkButton extends StatelessWidget {
             height: 60,
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              label.toUpperCase(),
-              textAlign: TextAlign.center,
-              style: HsText.button.copyWith(
-                color: enabled ? HsColors.label : HsColors.ink,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                caps ? label.toUpperCase() : label,
+                maxLines: 1,
+                textAlign: TextAlign.center,
+                style: HsText.button.copyWith(
+                  color: enabled ? HsColors.label : HsColors.ink,
+                ),
               ),
             ),
           ),

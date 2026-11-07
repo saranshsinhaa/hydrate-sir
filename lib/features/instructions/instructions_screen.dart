@@ -133,7 +133,7 @@ class InstructionsScreen extends ConsumerWidget {
             alignment: Alignment.centerLeft,
             child: InkLink(
               text: 'Rehearse it now',
-              onTap: () => ref.read(notificationsProvider).showSample(p),
+              onTap: () => _rehearse(context, ref, p),
             ),
           ),
           ToggleRow(
@@ -192,6 +192,26 @@ class InstructionsScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+Future<void> _rehearse(BuildContext context, WidgetRef ref, Profile p) async {
+  final door = p.reminderStyle == ReminderStyle.door;
+  final messenger = ScaffoldMessenger.of(context);
+  await ref
+      .read(notificationsProvider)
+      .rehearse(p, delay: door ? const Duration(seconds: 10) : Duration.zero);
+  if (!door) return;
+  messenger
+    ..hideCurrentSnackBar()
+    ..showSnackBar(
+      SnackBar(
+        content: Text(
+          'I shall knock in ten seconds, ${Hargreaves.of(p).you}. Do lock '
+          'the screen to see me as you would.',
+        ),
+        duration: const Duration(seconds: 6),
+      ),
+    );
 }
 
 /// Edits a copy of the profile in a sheet; saves on "Very good".

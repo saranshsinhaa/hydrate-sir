@@ -121,4 +121,33 @@ void main() {
       expect(status(totalMl: 0, now: 6 * 60).beforeFirstGlass, isTrue);
     });
   });
+
+  group('first day', () {
+    test('glasses due before setting up are not missed', () {
+      final s = DayStatus(
+        times: const Profile().glassTimes,
+        totalMl: 0,
+        goalMl: 2800,
+        glassSizeMl: 250,
+        nowMinutes: 22 * 60 + 34,
+        sleepMinutes: 23 * 60,
+        startMinutes: 22 * 60 + 30,
+      );
+      expect(s.overdueTimes, isEmpty);
+      expect(s.slots, everyElement(SlotState.upcoming));
+    });
+
+    test('glasses due after setting up still count', () {
+      final s = DayStatus(
+        times: const Profile().glassTimes,
+        totalMl: 0,
+        goalMl: 2800,
+        glassSizeMl: 250,
+        nowMinutes: 12 * 60,
+        sleepMinutes: 23 * 60,
+        startMinutes: 9 * 60,
+      );
+      expect(s.overdueTimes, [9 * 60 + 44, 11 * 60 + 5]);
+    });
+  });
 }

@@ -63,7 +63,8 @@ class TodayScreen extends ConsumerWidget {
               ),
               Expanded(
                 child: InkButton(
-                  label: "I've had my glass · ${p.glassSizeMl} ml",
+                  caps: false,
+                  label: "I'VE HAD MY GLASS · ${p.glassSizeMl} ml",
                   onPressed: () => _log(ref, p.glassSizeMl),
                 ),
               ),

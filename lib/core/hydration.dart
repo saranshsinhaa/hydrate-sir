@@ -88,7 +88,12 @@ class DayStatus {
     required this.glassSizeMl,
     required this.nowMinutes,
     required this.sleepMinutes,
+    this.startMinutes = 0,
   });
+
+  /// On the day the user began, glasses due before they set up the app are
+  /// not counted as missed.
+  final int startMinutes;
 
   final List<int> times;
   final int totalMl;
@@ -108,11 +113,13 @@ class DayStatus {
 
   double get fraction => goalMl == 0 ? 0 : totalMl / goalMl;
 
+  bool _overdue(int i) => times[i] <= nowMinutes && times[i] >= startMinutes;
+
   List<SlotState> get slots => [
     for (var i = 0; i < glassCount; i++)
       if (i < taken)
         SlotState.taken
-      else if (times[i] <= nowMinutes)
+      else if (_overdue(i))
         SlotState.overdue
       else
         SlotState.upcoming,
@@ -120,7 +127,7 @@ class DayStatus {
 
   List<int> get overdueTimes => [
     for (var i = taken; i < glassCount; i++)
-      if (times[i] <= nowMinutes) times[i],
+      if (_overdue(i)) times[i],
   ];
 
   /// Next glass not yet taken and not yet due, if any.

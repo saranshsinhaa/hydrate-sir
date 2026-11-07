@@ -17,9 +17,9 @@ import '../../services/notifications.dart';
 /// "At the door": the full-screen reminder shown over the lock screen
 /// (DESIGN.md §9).
 class DoorScreen extends ConsumerStatefulWidget {
-  const DoorScreen({super.key, required this.slot});
+  const DoorScreen({super.key, required this.payload});
 
-  final int slot;
+  final ReminderPayload payload;
 
   @override
   ConsumerState<DoorScreen> createState() => _DoorScreenState();
@@ -32,6 +32,8 @@ class _DoorScreenState extends ConsumerState<DoorScreen> {
     if (_closing) return;
     _closing = true;
     final nav = Navigator.of(context);
+    // Answered here, so it needn't linger in the notification shade.
+    await ref.read(notificationsProvider).dismiss(widget.payload.id);
     await LockScreen.release(moveToBack: toLockScreen);
     if (nav.canPop()) nav.pop();
   }
@@ -48,14 +50,14 @@ class _DoorScreenState extends ConsumerState<DoorScreen> {
         .read(notificationsProvider)
         .snooze(
           profile: ref.read(profileProvider),
-          slot: widget.slot,
+          slot: widget.payload.slot,
           now: ref.read(clockProvider)(),
         );
     await _close(toLockScreen: true);
   }
 
   Future<void> _notNow() async {
-    await ref.read(notificationsProvider).cancelFollowUp(widget.slot);
+    await ref.read(notificationsProvider).cancelFollowUp(widget.payload.slot);
     await _close(toLockScreen: true);
   }
 
@@ -65,7 +67,8 @@ class _DoorScreenState extends ConsumerState<DoorScreen> {
     final h = Hargreaves.of(p);
     final now = ref.watch(nowProvider).value ?? ref.read(clockProvider)();
     final count = p.glassCount;
-    final slot = widget.slot.clamp(0, count - 1);
+    final slot = widget.payload.slot.clamp(0, count - 1);
+    final rehearsal = widget.payload.rehearsal;
 
     return PopScope(
       canPop: false,
@@ -94,7 +97,9 @@ class _DoorScreenState extends ConsumerState<DoorScreen> {
                 const Center(child: TrayIllustration(width: 200, onDark: true)),
                 const SizedBox(height: 26),
                 Text(
-                  'GLASS ${slot + 1} OF $count · ${p.glassSizeMl} ML',
+                  rehearsal
+                      ? 'A REHEARSAL · ${p.glassSizeMl} ml'
+                      : 'GLASS ${slot + 1} OF $count · ${p.glassSizeMl} ml',
                   textAlign: TextAlign.center,
                   style: HsText.courier(
                     12,
@@ -105,16 +110,35 @@ class _DoorScreenState extends ConsumerState<DoorScreen> {
                 const SizedBox(height: 10),
                 Semantics(
                   liveRegion: true,
-                  child: Text(
-                    '${h.reminderTitle(p.glassSizeMl)} '
-                    '${h.reminderBody(index: slot, count: count, minutes: p.glassTimes[slot])}',
-                    textAlign: TextAlign.center,
-                    style: HsText.caslon(
-                      20,
-                      italic: true,
-                      color: HsColors.label,
-                      height: 1.45,
-                    ),
+                  child: Column(
+                    spacing: 8,
+                    children: [
+                      Text(
+                        h.reminderTitle(p.glassSizeMl),
+                        textAlign: TextAlign.center,
+                        style: HsText.caslon(
+                          26,
+                          weight: FontWeight.w700,
+                          color: HsColors.label,
+                        ),
+                      ),
+                      Text(
+                        rehearsal
+                            ? Hargreaves.rehearsalBody
+                            : h.reminderBody(
+                                index: slot,
+                                count: count,
+                                minutes: p.glassTimes[slot],
+                              ),
+                        textAlign: TextAlign.center,
+                        style: HsText.caslon(
+                          19,
+                          italic: true,
+                          color: HsColors.label,
+                          height: 1.45,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const Spacer(),

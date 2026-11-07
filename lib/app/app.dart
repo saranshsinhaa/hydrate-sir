@@ -83,7 +83,7 @@ class _HydrateSirAppState extends ConsumerState<HydrateSirApp>
       await _navigator.currentState?.push(
         MaterialPageRoute<void>(
           fullscreenDialog: true,
-          builder: (_) => DoorScreen(slot: payload.slot),
+          builder: (_) => DoorScreen(payload: payload),
         ),
       );
     } else {

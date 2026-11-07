@@ -20,14 +20,30 @@ abstract final class ReminderAction {
 
 /// What a reminder carries so a tap or button knows which glass it was.
 class ReminderPayload {
-  const ReminderPayload({required this.slot, required this.door});
+  const ReminderPayload({
+    required this.slot,
+    required this.door,
+    this.id = 0,
+    this.rehearsal = false,
+  });
 
   final int slot;
 
   /// Shown as a full-screen reminder.
   final bool door;
 
-  String encode() => jsonEncode({'slot': slot, 'door': door});
+  /// Notification id, so it can be cleared once answered.
+  final int id;
+
+  /// A rehearsal from Standing Instructions, not a real glass.
+  final bool rehearsal;
+
+  String encode() => jsonEncode({
+    'slot': slot,
+    'door': door,
+    'id': id,
+    'rehearsal': rehearsal,
+  });
 
   static ReminderPayload? decode(String? raw) {
     if (raw == null || raw.isEmpty) return null;
@@ -36,6 +52,8 @@ class ReminderPayload {
       return ReminderPayload(
         slot: j['slot'] is int ? j['slot']! as int : 0,
         door: j['door'] == true,
+        id: j['id'] is int ? j['id']! as int : 0,
+        rehearsal: j['rehearsal'] == true,
       );
     } catch (_) {
       return null;
@@ -154,19 +172,45 @@ class Notifications {
 
   Future<void> dismiss(int id) => _plugin.cancel(id: id);
 
-  /// Shows a reminder at once, for trying the styles from Standing
-  /// Instructions.
-  Future<void> showSample(Profile profile) async {
+  /// A rehearsal reminder for trying the styles from Standing Instructions.
+  /// "At the door" only shows in full over a locked screen, so it can be
+  /// delayed to give the user time to lock the phone.
+  Future<void> rehearse(
+    Profile profile, {
+    Duration delay = Duration.zero,
+  }) async {
     final h = Hargreaves.of(profile);
-    await _plugin.show(
-      id: 9100,
-      title: h.reminderTitle(profile.glassSizeMl),
-      body: 'A rehearsal, ${h.you}. This is how I shall announce myself.',
-      notificationDetails: _details(profile, ReminderKind.glass),
-      payload: ReminderPayload(
-        slot: 0,
-        door: profile.reminderStyle == ReminderStyle.door,
-      ).encode(),
+    const id = 9100;
+    final title = h.reminderTitle(profile.glassSizeMl);
+    const body = Hargreaves.rehearsalBody;
+    final payload = ReminderPayload(
+      slot: 0,
+      id: id,
+      rehearsal: true,
+      door: profile.reminderStyle == ReminderStyle.door,
+    ).encode();
+    final details = _details(profile, ReminderKind.glass);
+    if (delay == Duration.zero) {
+      await _plugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: details,
+        payload: payload,
+      );
+      return;
+    }
+    await initTimeZones();
+    await _plugin.zonedSchedule(
+      id: id,
+      scheduledDate: tz.TZDateTime.now(tz.local).add(delay),
+      notificationDetails: details,
+      androidScheduleMode: await canBePunctual()
+          ? AndroidScheduleMode.exactAllowWhileIdle
+          : AndroidScheduleMode.inexactAllowWhileIdle,
+      title: title,
+      body: body,
+      payload: payload,
     );
   }
 
@@ -186,6 +230,7 @@ class Notifications {
       body: r.body,
       payload: ReminderPayload(
         slot: r.slot,
+        id: r.id,
         door:
             profile.reminderStyle == ReminderStyle.door &&
             r.kind != ReminderKind.followUp,

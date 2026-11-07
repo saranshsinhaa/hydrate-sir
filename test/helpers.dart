@@ -56,8 +56,18 @@ class FakeNotifications extends Notifications {
   @override
   Future<void> cancelFollowUp(int slot) async {}
 
+  final dismissed = <int>[];
+
   @override
-  Future<void> showSample(Profile profile) async {}
+  Future<void> dismiss(int id) async => dismissed.add(id);
+
+  final rehearsals = <Duration>[];
+
+  @override
+  Future<void> rehearse(
+    Profile profile, {
+    Duration delay = Duration.zero,
+  }) async => rehearsals.add(delay);
 }
 
 class Harness {

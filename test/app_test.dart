@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hydrate_sir/core/profile.dart';
+import 'package:hydrate_sir/features/reminder/door_screen.dart';
+import 'package:hydrate_sir/services/notifications.dart';
 
 import 'helpers.dart';
 
@@ -88,6 +92,11 @@ void main() {
     expect(find.text('TAKEN TODAY'), findsOneWidget);
     expect(h.prefs.getString('profile.v1'), contains('"onboarded":true'));
     expect(h.prefs.getString('profile.v1'), contains('"dailyGoalMl":2900'));
+    // Set up at 09:30: the 07:00 and 08:22 glasses are not held against Ada.
+    expect(
+      find.text('Your next glass at 09:44, Ada. Do carry on.'),
+      findsOneWidget,
+    );
 
     await h.db.close();
   });
@@ -102,7 +111,7 @@ void main() {
     // 09:30: the 07:00 and 08:22 glasses are overdue.
     expect(find.textContaining('two glasses remain untouched'), findsOneWidget);
 
-    await tapText(tester, "I'VE HAD MY GLASS · 250 ML");
+    await tapText(tester, "I'VE HAD MY GLASS · 250 ml");
     await letDatabaseWork(tester);
     await settle(tester);
     final total = await tester.runAsync(
@@ -161,6 +170,38 @@ void main() {
     await tapText(tester, 'Cellar Book');
     expect(find.text('The Cellar Book'), findsOneWidget);
     expect(find.textContaining('awaits its first entry'), findsOneWidget);
+    await h.db.close();
+  });
+
+  testWidgets('door screen: a rehearsal is labelled, and taking it logs', (
+    tester,
+  ) async {
+    usePhone(tester);
+    final h = await Harness.create(profile: const Profile(onboarded: true));
+    await tester.pumpWidget(h.app());
+    await settle(tester);
+    final nav = tester.state<NavigatorState>(find.byType(Navigator).first);
+    unawaited(
+      nav.push(
+        MaterialPageRoute<void>(
+          builder: (_) => const DoorScreen(
+            payload: ReminderPayload(slot: 0, door: true, rehearsal: true),
+          ),
+        ),
+      ),
+    );
+    await settle(tester);
+    expect(find.text('A REHEARSAL · 250 ml'), findsOneWidget);
+    expect(find.text('Your 250 ml, sir.'), findsOneWidget);
+
+    await tester.tap(find.text("I'VE HAD MY GLASS"));
+    await letDatabaseWork(tester);
+    await settle(tester);
+    final rows = await tester.runAsync(
+      () => h.db.select(h.db.intakeEntries).get(),
+    );
+    expect(rows, hasLength(1));
+    expect(find.byType(DoorScreen), findsNothing);
     await h.db.close();
   });
 }

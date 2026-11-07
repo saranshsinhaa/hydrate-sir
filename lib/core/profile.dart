@@ -33,6 +33,7 @@ class Profile {
     this.respectSilent = false,
     this.reminderStyle = ReminderStyle.note,
     this.onboarded = false,
+    this.startedAt,
   });
 
   final Address address;
@@ -52,6 +53,9 @@ class Profile {
   final bool respectSilent;
   final ReminderStyle reminderStyle;
   final bool onboarded;
+
+  /// When the user accepted The Arrangements.
+  final DateTime? startedAt;
 
   static const minWeight = 30, maxWeight = 200;
   static const minAge = 12, maxAge = 100;
@@ -77,6 +81,7 @@ class Profile {
     bool? respectSilent,
     ReminderStyle? reminderStyle,
     bool? onboarded,
+    DateTime? startedAt,
   }) {
     return Profile(
       address: address ?? this.address,
@@ -94,6 +99,7 @@ class Profile {
       respectSilent: respectSilent ?? this.respectSilent,
       reminderStyle: reminderStyle ?? this.reminderStyle,
       onboarded: onboarded ?? this.onboarded,
+      startedAt: startedAt ?? this.startedAt,
     );
   }
 
@@ -113,6 +119,7 @@ class Profile {
     'respectSilent': respectSilent,
     'reminderStyle': reminderStyle.name,
     'onboarded': onboarded,
+    'startedAt': startedAt?.millisecondsSinceEpoch,
   };
 
   /// Unknown or missing fields fall back to defaults, so older saves load.
@@ -142,6 +149,9 @@ class Profile {
         d.reminderStyle,
       ),
       onboarded: boolOr(j['onboarded'], d.onboarded),
+      startedAt: j['startedAt'] is int
+          ? DateTime.fromMillisecondsSinceEpoch(j['startedAt']! as int)
+          : null,
     );
   }
 }

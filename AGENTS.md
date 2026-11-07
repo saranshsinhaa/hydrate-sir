@@ -41,7 +41,7 @@ Every feature, fix and change ships with tests in the same change. Nothing exist
 
 | When | Runs |
 |---|---|
-| `pre-commit` hook | format, analyze (zero issues), unit + widget tests |
+| `pre-commit` hook | format, analyze (zero issues), unit + widget tests, a CHANGELOG.md entry for the current version |
 | `commit-msg` hook | commit message rules (section 8) |
 | CI on push/PR (`ci.yml`) | `scripts/check.sh all`: the above plus a release build, the permission allowlist, and a check that resources used by name survived shrinking |
 
@@ -116,6 +116,7 @@ scripts/          setup.sh, check.sh
 - **No attribution of any kind:** no `Co-Authored-By`, no "Generated with …", no tool or AI names.
 - The `commit-msg` hook rejects anything else.
 - Releases are tag-based (`vX.Y.Z`): pushing a tag builds and publishes the APK.
+- **CHANGELOG.md** is the release notes. Every user-facing change gets a line under the next version, written for users in Hargreaves' voice (no internal or developer detail). Bump `version:` in `pubspec.yaml` and add its `## [x.y.z] - date` section together; the release workflow publishes that section and refuses a version without one.
 - **Before tagging, run a release build on a real phone** (`flutter build apk --release`, then install it): open the app, finish onboarding, rehearse a reminder and press Thank you. Release builds shrink and optimise code and resources, so debug testing alone is not enough.
 
 ## 9. Hargreaves' voice: Victorian English

@@ -5,6 +5,7 @@
 #   format   fail if any Dart file is not formatted
 #   analyze  flutter analyze with zero issues allowed
 #   test     unit + widget tests
+#   changelog  fail if the version in pubspec.yaml has no CHANGELOG.md entry
 #   build    release APK build
 #   permissions  fail if the release APK asks for anything outside the allowlist
 #   resources    fail if resources looked up by name were shrunk away
@@ -79,6 +80,14 @@ step_permissions() {
   echo "  ✓ only the allowed permissions"
 }
 
+step_changelog() {
+  echo "▸ changelog"
+  local version
+  version="$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)"
+  scripts/changelog.sh "$version" > /dev/null
+  echo "  ✓ CHANGELOG.md has an entry for $version"
+}
+
 # Resources the Dart code looks up by name. Release builds shrink away
 # anything that looks unused, so make sure these survived.
 REQUIRED_DRAWABLES=(ic_stat_bowtie)
@@ -116,7 +125,8 @@ for s in "$@"; do
     build) step_build ;;
     permissions | offline) step_permissions ;;
     resources) step_resources ;;
-    all) step_format; step_analyze; step_test; step_build; step_permissions; step_resources ;;
+    changelog) step_changelog ;;
+    all) step_format; step_analyze; step_test; step_changelog; step_build; step_permissions; step_resources ;;
     *) echo "unknown step: $s" >&2; exit 2 ;;
   esac
 done

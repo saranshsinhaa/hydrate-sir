@@ -32,6 +32,13 @@ jobs:
           flutter-version-file: pubspec.yaml
           cache: true
 
+      # Fail fast if CHANGELOG.md has no entry for this version.
+      - name: Release notes from CHANGELOG.md
+        run: |
+          mkdir -p build
+          scripts/changelog.sh "$GITHUB_REF_NAME" > build/release-notes.md
+          cat build/release-notes.md
+
       - run: flutter pub get
 
       - name: Format, analyze, test
@@ -93,7 +100,7 @@ jobs:
             build/app/outputs/flutter-apk/hydrate-sir-${{ steps.build.outputs.version }}.apk
             build/app/outputs/flutter-apk/hydrate-sir-${{ steps.build.outputs.version }}.apk.sha256
           fail_on_unmatched_files: true
-          generate_release_notes: true
+          body_path: build/release-notes.md
           prerelease: ${{ contains(github.ref_name, '-') }}
 
       - name: Remove signing material

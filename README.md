@@ -76,4 +76,4 @@ My suggestion is a sensible estimate for healthy adults; it is not medical advic
 
 ---
 
-<sub>For the mechanically minded: [running it yourself](docs/development.md) · [the design](docs/design.md) · [house rules for contributors](AGENTS.md)</sub>
+<sub>[What's new](CHANGELOG.md) · For the mechanically minded: [running it yourself](docs/development.md) · [the design](docs/design.md) · [house rules for contributors](AGENTS.md)</sub>

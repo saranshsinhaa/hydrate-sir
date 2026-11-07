@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-# Runs before every commit: formatting, lints and tests.
+# Runs before every commit: formatting, lints, tests and the changelog entry.
 set -euo pipefail
-exec "$(git rev-parse --show-toplevel)/scripts/check.sh" format analyze test
+exec "$(git rev-parse --show-toplevel)/scripts/check.sh" format analyze test changelog

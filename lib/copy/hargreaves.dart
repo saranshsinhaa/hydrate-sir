@@ -115,10 +115,13 @@ class Hargreaves {
     required bool month,
     required double? metRatio,
     String? worstDay,
+    bool todayRecorded = false,
   }) {
     final span = month ? 'month' : 'week';
     if (metRatio == null) {
-      return 'The Cellar Book awaits its first entry, $you.';
+      return todayRecorded
+          ? "Today's glasses go into the book tonight, $you."
+          : 'The Cellar Book awaits its first entry, $you.';
     }
     if (metRatio >= 1) {
       return 'An immaculate $span, $you. I am almost moved.';

@@ -106,6 +106,10 @@ void main() {
       String r(double? x) =>
           sir.cellarRemark(month: false, metRatio: x, worstDay: 'Wednesday');
       expect(r(null), contains('awaits its first entry'));
+      expect(
+        sir.cellarRemark(month: false, metRatio: null, todayRecorded: true),
+        "Today's glasses go into the book tonight, sir.",
+      );
       expect(r(1), contains('immaculate week'));
       expect(r(0.7), contains('most creditable'));
       expect(r(0.5), contains('Of Wednesday, I shall say nothing'));

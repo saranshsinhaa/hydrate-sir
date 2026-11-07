@@ -65,14 +65,13 @@ class CellarBookScreen extends ConsumerWidget {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(HsSpace.side, 26, HsSpace.side, 22),
         children: [
+          Semantics(
+            header: true,
+            child: Text('The Cellar Book', style: HsText.h1),
+          ),
+          const SizedBox(height: 10),
           Row(
             children: [
-              Expanded(
-                child: Semantics(
-                  header: true,
-                  child: Text('The Cellar Book', style: HsText.h1),
-                ),
-              ),
               InkSegments<LedgerRange>(
                 options: const [
                   ChipOption(LedgerRange.week, 'Week'),
@@ -89,6 +88,7 @@ class CellarBookScreen extends ConsumerWidget {
               month: range == LedgerRange.month,
               metRatio: stats.metRatio,
               worstDay: worst,
+              todayRecorded: entries.isNotEmpty && entries.last.value > 0,
             ),
             style: HsText.voice,
           ),
@@ -108,7 +108,7 @@ class CellarBookScreen extends ConsumerWidget {
           const SizedBox(height: 20),
           const Eyebrow('Recent days'),
           const SizedBox(height: 4),
-          for (final e in entries.reversed.take(7))
+          for (final e in _sinceFirstRecord(entries).reversed.take(7))
             _DayRow(
               day: e.key,
               ml: e.value,
@@ -120,6 +120,15 @@ class CellarBookScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Days from the first one with a record, so a new user's list isn't padded
+/// with empty days from before they began.
+List<MapEntry<DateTime, int>> _sinceFirstRecord(
+  List<MapEntry<DateTime, int>> entries,
+) {
+  final first = entries.indexWhere((e) => e.value > 0);
+  return first < 0 ? const [] : entries.sublist(first);
 }
 
 class _Chart extends StatelessWidget {

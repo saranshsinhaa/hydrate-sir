@@ -13,11 +13,11 @@ This repository will become public. Treat every file as something strangers will
    - No packages that phone home: no Firebase, analytics, crash reporting, ads, remote config, HTTP clients, or `google_fonts` (it downloads fonts at runtime).
    - Fonts are bundled in `assets/fonts/` with their licence files.
    - All user data stays on the device.
-2. **No git write operations by AI agents.** Agents may only read git state (`status`, `diff`, `log`, `show`, `blame`). Agents never run `add`, `commit`, `push`, `tag`, `merge`, `rebase`, `reset`, `checkout`/`switch`, `stash`, `restore`, `clean`, `rm`, `branch -d`, `config`, or any `gh` command that creates or changes something on GitHub. When work is ready, the agent suggests a commit message and the human commits.
+2. **Limited git for AI agents.** Agents may read git state and make **local commits** (`git add`, `git commit -m`) in small, gradual steps, each passing the hooks. Agents never push, tag, amend, merge, rebase, reset, checkout/switch, stash, restore, clean, `rm`, delete branches, change git config, or run any `gh` command that creates or changes something on GitHub. Anything destructive needs the human's explicit permission first; pushing is always the human's job.
 3. **Nothing installed on the developer's machine.** No `brew`, `sdkmanager`, `npm -g`, `pip`, `dart pub global` and so on. If a tool is missing, stop and print the exact command for the human to run. `flutter pub get` and `flutter pub add` for project dependencies are fine.
 4. **Public-safe content only.** Never put private links (private docs, private design files, shared-session URLs), personal emails, device serial numbers, tokens, passwords or local machine paths into tracked files. Links must work for a stranger.
 5. **No secrets in git:** `*.jks`, `*.keystore`, `key.properties`, `.env*` are ignored and stay that way.
-6. **Ask the human before:** adding a dependency, adding an Android permission, changing the database schema, changing CI/release workflows, or deleting files you didn't create.
+6. **Ask the human before:** adding a dependency not already listed in section 5, adding an Android permission not listed in section 10, changing the database schema after the first release, changing CI/release workflows, or deleting files you didn't create.
 
 ## 2. Tests are required
 
@@ -66,8 +66,8 @@ dart format lib test integration_test                     # fix formatting
 - **State:** Riverpod.
 - **Database:** Drift (SQLite) for the intake log; `shared_preferences` for simple settings.
 - **Reminders:** `flutter_local_notifications` + `timezone`. Exact alarms (`SCHEDULE_EXACT_ALARM`), falling back to inexact if the user denies it.
-- **Charts:** hand-drawn `CustomPainter` or `fl_chart`, whichever matches the design better.
-- Prefer fewer dependencies. Each new package needs a one-line reason and the human's approval.
+- **Charts and illustrations:** hand-drawn with `CustomPainter`; no chart or SVG packages.
+- **Approved packages:** `flutter_riverpod`, `drift`, `drift_flutter`, `sqlite3_flutter_libs`, `shared_preferences`, `flutter_local_notifications`, `timezone`, `flutter_timezone`, `intl`; dev: `build_runner`, `drift_dev`. Anything else needs a one-line reason and the human's approval.
 
 ## 6. Project layout
 
@@ -95,6 +95,8 @@ scripts/          setup.sh, check.sh
 - Business logic is plain Dart in pure functions, with unit tests.
 
 ## 7. Design
+
+**[DESIGN.md](DESIGN.md) is the full specification** (colours, type, components, screens, copy, logic, reminders). Read it before building any UI or copy. The summary below is for quick reference; DESIGN.md wins if they differ.
 
 - **Colours:** paper `#E9E1CC`, card `#F7F2E4`, bottle green `#1F3B2D`, deep green `#16291F`, stamp red `#A3271F`, rule line `#CFC5AA`.
 - **Fonts:** Libre Caslon Text for body and headings; Courier Prime for labels, numbers and buttons (uppercase, letter-spaced). Both are SIL Open Font License; ship the licence files.
@@ -128,6 +130,7 @@ All user-facing text, including notifications, errors, empty states, permission 
 
 ## 10. Reminders on Android
 
+- **Approved permissions:** `POST_NOTIFICATIONS`, `SCHEDULE_EXACT_ALARM`, `USE_FULL_SCREEN_INTENT`, `RECEIVE_BOOT_COMPLETED`, `VIBRATE`, `WAKE_LOCK`. Never `INTERNET`.
 - Ask for `POST_NOTIFICATIONS` at the end of onboarding, with Hargreaves explaining why.
 - Reschedule every reminder when settings change, after a reboot (`RECEIVE_BOOT_COMPLETED`) and after an app update.
 - Guide the user to exempt the app from battery optimisation; some manufacturers' Android builds (including Nothing OS) delay background alarms.

@@ -20,7 +20,9 @@
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(git show:*)",
-      "Bash(git blame:*)"
+      "Bash(git blame:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m:*)"
     ],
     "deny": [
       "Bash(brew install:*)",
@@ -36,8 +38,7 @@
       "Bash(flutter pub global:*)",
       "Bash(flutter upgrade:*)",
       "Bash(flutter channel:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
+      "Bash(git commit --amend:*)",
       "Bash(git push:*)",
       "Bash(git tag:*)",
       "Bash(git merge:*)",

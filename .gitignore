@@ -1,0 +1,29 @@
+# macOS / editors
+.DS_Store
+*.swp
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+coverage/
+
+# Android build output (android/.gitignore covers the Gradle files)
+*.apk
+*.aab
+
+# Secrets (never commit)
+*.jks
+*.keystore
+key.properties
+.env*
+
+# Claude Code local overrides
+.claude/settings.local.json

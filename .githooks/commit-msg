@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Enforces the commit message rules in AGENTS.md:
+#   - exactly one line, Conventional Commits format
+#   - no body, no trailers, no AI attribution
+# Written for bash 3.2 (the macOS default).
+set -euo pipefail
+
+msg_file="$1"
+
+# Drop comment lines and blank lines that git adds.
+content="$(grep -v '^#' "$msg_file" | sed -e '/^[[:space:]]*$/d' || true)"
+count="$(printf '%s' "$content" | grep -c '' || true)"
+
+fail() {
+  echo "✗ commit message rejected: $1" >&2
+  echo "  expected one line like: feat(today): add glass tracker" >&2
+  exit 1
+}
+
+[[ "$count" -eq 0 ]] && fail "message is empty"
+[[ "$count" -gt 1 ]] && fail "only a single summary line is allowed (no body or trailers)"
+
+subject="$content"
+types='feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert'
+pattern="^(${types})(\([a-z0-9-]+\))?!?: [a-z0-9].*[^.]$"
+
+[[ "$subject" =~ $pattern ]] || fail "not in Conventional Commits format (type(scope): lowercase summary, no trailing period)"
+[[ ${#subject} -le 72 ]] || fail "longer than 72 characters"
+
+if printf '%s' "$subject" | grep -qiE 'co-authored-by|generated (with|by)|claude|anthropic|copilot|chatgpt|(^|[^a-z])ai([^a-z]|$)'; then
+  fail "no attribution or AI mentions in commit messages"
+fi

@@ -1,0 +1,72 @@
+name: Release
+
+# Push a tag like v1.2.0 to build an APK and publish it as a GitHub Release.
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+
+      - run: flutter pub get
+
+      - name: Format, analyze, test
+        run: scripts/check.sh format analyze test
+
+      # Signing secrets are optional until keys are set up.
+      # Without them the APK is signed with a throwaway debug key.
+      - name: Restore signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::No signing secrets set; release APK will be debug-signed."
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/release.jks
+          {
+            echo "storeFile=release.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > android/key.properties
+
+      - name: Build release APK
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          flutter build apk --release --build-name="$VERSION" --build-number="${{ github.run_number }}"
+          mv build/app/outputs/flutter-apk/app-release.apk "build/app/outputs/flutter-apk/hydrate-sir-$VERSION.apk"
+          cp "build/app/outputs/flutter-apk/hydrate-sir-$VERSION.apk" build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Offline check
+        run: scripts/check.sh offline
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: build/app/outputs/flutter-apk/hydrate-sir-*.apk
+          generate_release_notes: true
+
+      - name: Remove signing material
+        if: always()
+        run: rm -f android/app/release.jks android/key.properties
